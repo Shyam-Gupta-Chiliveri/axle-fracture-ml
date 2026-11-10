@@ -120,8 +120,8 @@ const COPY = {
     tuneP: "XGBoost and LightGBM were trained again: 500 trees, depth 8, and a learning rate of 0.05.",
     tuneN: "The first bar is training, the second is the test. XGBoost's test moves from 89.87% to 89.91%. LightGBM's test moves from 90.01% to 89.98%.",
     advT: "Advanced optimization",
-    advP: "Those trees are stacked. Ridge combines them, checked in three folds. Brittleness gets the same stack.",
-    advN: "The stacked test stays at 90.00%. Linear and Ridge stay at 90.02%.",
+    advP: "The stack is set beside Linear and Ridge. The first bar is ductility, the second is brittleness.",
+    advN: "Linear and Ridge hold 90.02% on both. The stack holds 90.00% on both. Brittleness is 100 minus ductility, so the two bars match.",
     s6k: "06 · The miss",
     s6h: "The error in ductility points",
     s6p: "The typical miss for the chosen Ridge model is 1.59 ductility points.",
@@ -334,8 +334,8 @@ const COPY = {
     tuneP: "XGBoost und LightGBM wurden erneut trainiert: 500 Bäume, Tiefe 8 und eine Lernrate von 0,05.",
     tuneN: "Der erste Balken ist das Training, der zweite der Test. Der Test von XGBoost geht von 89,87 % auf 89,91 %. LightGBM geht von 90,01 % auf 89,98 %.",
     advT: "Erweiterte Optimierung",
-    advP: "Dieselben Bäume werden gestapelt. Ridge führt sie zusammen, geprüft in drei Falten. Sprödigkeit erhält denselben Stapel.",
-    advN: "Der gestapelte Test bleibt bei 90,00 %. Linear und Ridge bleiben bei 90,02 %.",
+    advP: "Der Stack steht neben Linear und Ridge. Der erste Balken ist Duktilität, der zweite Sprödigkeit.",
+    advN: "Linear und Ridge halten auf beiden 90,02 %. Der Stack hält auf beiden 90,00 %. Sprödigkeit ist 100 minus Duktilität, deshalb sind die beiden Balken gleich.",
     s6k: "06 · Der Fehlbetrag",
     s6h: "Der Fehler in Duktilitätspunkten",
     s6p: "Der typische Fehler des gewählten Ridge-Modells beträgt 1,59 Duktilitätspunkte.",
@@ -1329,9 +1329,48 @@ const TUNE = [
 ];
 
 const ADV = [
-  { name: "Ductility", key: "legDuct", train: 0.9062, test: 0.899969 },
-  { name: "Brittleness", key: "legBrit", train: 0.9061, test: 0.899968 },
+  { name: "Linear", duct: 0.900235, brit: 0.900235 },
+  { name: "Ridge", duct: 0.900235, brit: 0.900235 },
+  { name: "Stack", duct: 0.899969, brit: 0.899968 },
 ];
+
+function chartAdvance() {
+  const ymin = 89.96;
+  const ymax = 90.06;
+  const W = 720;
+  const H = 300;
+  const L = 58;
+  const R = 20;
+  const T = 36;
+  const B = 36;
+  const plotW = W - L - R;
+  const plotH = H - T - B;
+  const y = (value) => T + ((ymax - value) / (ymax - ymin)) * plotH;
+  const slot = plotW / ADV.length;
+  const x = (index) => L + slot * index + slot / 2;
+  const ticks = [89.96, 89.98, 90, 90.02, 90.04, 90.06].map((tick) => {
+    const yy = y(tick);
+    return `<line x1="${L}" x2="${L + plotW}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}" stroke="var(--chart-grid)"/>
+      <text x="${L - 8}" y="${(yy + 4).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">${formatNumber(tick, 2)}</text>`;
+  }).join("");
+  const names = ADV.map((row, index) => {
+    const win = row.name !== "Stack";
+    return `<text x="${x(index).toFixed(1)}" y="${H - 12}" text-anchor="middle" fill="${win ? "var(--ink)" : "var(--muted)"}" font-size="12" font-weight="${win ? 500 : 400}">${row.name}</text>`;
+  }).join("");
+  const bars = ADV.map((row, index) => {
+    const top = Math.min(y(row.duct * 100), y(row.brit * 100));
+    const label = `<text x="${x(index).toFixed(1)}" y="${(top - 10).toFixed(1)}" text-anchor="middle" fill="var(--ink)" font-size="11" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(row.duct * 100, 2)} / ${formatNumber(row.brit * 100, 2)}</text>`;
+    return vizBar(x(index) - 12, y(row.duct * 100), y(ymin), 20, "var(--blue)") +
+      vizBar(x(index) + 12, y(row.brit * 100), y(ymin), 20, "var(--force)") +
+      label;
+  }).join("");
+  return vizSvg(
+    vizLegend([{ label: t("legDuct"), color: "var(--blue)" }, { label: t("legBrit"), color: "var(--force)" }]) +
+      ticks + names + bars,
+    W,
+    H
+  );
+}
 
 function chartPairs(rows) {
   const ymin = 0;
@@ -1385,7 +1424,7 @@ function renderMethod() {
   mount("c-cx", chartComplex());
   mount("c-mae", chartMae());
   mount("c-tune", chartPairs(TUNE));
-  mount("c-adv", chartPairs(ADV));
+  mount("c-adv", chartAdvance());
 }
 
 function show(mode) {
