@@ -1,8 +1,22 @@
 # Axle fracture ML
 
-Reproducible machine-learning pipeline for ductility of hardened **4Cr13** axle steel. This repository is the model, the evaluation, and the release path. The agent desk, the standards search, and the Frankfurt monitoring board live in other repositories.
+Property desk for the 385,000-row axle tests. Enter a hardness reading and the desk estimates ductility, brittleness, and bending force. Enter a target property and it returns a temper that was actually run, plus the hardness those axles had.
+
+Open `web/index.html` in a browser, or serve the `web` folder. The page is static: hardness in, properties out; a target property back to a recorded temper; an Excel or CSV upload analysed in the browser.
+
+```bash
+python3 -m http.server 8765 --directory web
+```
+
+The agent desk, the standards search, and the Frankfurt monitoring board live in other repositories.
 
 The served prediction uses **hardness only** (mean, min, and max HV10). Chemistry-only and the full table, including bending force, are trained in the same run so the thesis can show what each measurement is worth. Brittleness is checked as `100 − ductility` and is not a second model.
+
+## The model comparison
+
+`notebooks/02_ML_Prediction.ipynb` trains Linear, Ridge, Random Forest, XGBoost, LightGBM, and a stacking ensemble on chemistry, hardness, and bending force, with a random 80/20 split and seed 42. Ridge is the ductility model it keeps: training R² 0.8996, test R² 0.9002, test MAE 1.59. Linear regression is the brittleness model it keeps, at the same test R², because brittleness is 100 minus ductility. **The method** slides in the desk show these scores.
+
+That notebook reads `data/raw/axle_test.csv`. It needs the bending force of the axle as an input, so the hardness desk does not serve it.
 
 ## Place the thesis table
 

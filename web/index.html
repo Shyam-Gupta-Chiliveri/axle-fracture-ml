@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Axle property desk</title>
+  <script>
+    (function () {
+      var theme = localStorage.getItem("axle-theme");
+      if (theme === "dark" || theme === "light") document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=21">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div>
+        <p class="eyebrow" data-i18n="eyebrow">Materials laboratory</p>
+        <p class="brand-name" data-i18n="brand">Axle property desk</p>
+      </div>
+    </div>
+    <div class="top-tools">
+      <div class="seg" role="group" data-i18n-aria="themeLabel" aria-label="Appearance">
+        <button type="button" id="theme-light" class="seg-btn" data-i18n="themeLight" aria-pressed="true">Light</button>
+        <button type="button" id="theme-dark" class="seg-btn" data-i18n="themeDark" aria-pressed="false">Dark</button>
+      </div>
+      <div class="seg" role="group" data-i18n-aria="langLabel" aria-label="Language">
+        <button type="button" class="seg-btn" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" class="seg-btn" data-lang="de" aria-pressed="false">DE</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="modes" data-i18n-aria="tasksLabel" aria-label="Tasks">
+      <button type="button" class="mode is-active" data-mode="measure" data-i18n="modeMeasure">From hardness</button>
+      <button type="button" class="mode" data-mode="target" data-i18n="modeTarget">From a target</button>
+      <button type="button" class="mode" data-mode="batch" data-i18n="modeFile">From a file</button>
+      <button type="button" class="mode" data-mode="method" data-i18n="modeMethod">The method</button>
+    </nav>
+
+    <section id="panel-measure" class="panel">
+      <div class="panel-head">
+        <h1 data-i18n="hMeasure">From a hardness reading</h1>
+        <p data-i18n="pMeasure">Enter the mean HV10. When you know the temper, type the temperature in degrees and the hold in hours. Ductility, brittleness, and bending force come from these axle tests. Rockwell, Brinell, and tensile strength are read from the same hardness.</p>
+      </div>
+      <form id="measure-form" class="controls">
+        <label class="field">
+          <span data-i18n="meanHv">Mean HV10</span>
+          <input id="hv" type="number" min="400" max="900" step="1" value="640" inputmode="decimal">
+        </label>
+        <label class="check">
+          <input id="use-temper" type="checkbox">
+          <span data-i18n="knowTemper">I know the temper</span>
+        </label>
+        <div id="temper-fields" class="temper-fields" hidden>
+          <div class="process" role="radiogroup" data-i18n-aria="processLabel" aria-label="Temper process">
+            <label class="process-card">
+              <input type="radio" name="process" value="temper" checked>
+              <span class="process-kicker" data-i18n="processTemperKicker">Furnace</span>
+              <span class="process-name" data-i18n="processTemper">Tempering</span>
+              <span class="process-note" data-i18n="processTemperNote">Temperature and hold</span>
+            </label>
+            <label class="process-card">
+              <input type="radio" name="process" value="vacuum">
+              <span class="process-kicker" data-i18n="processVacKicker">Vacuum</span>
+              <span class="process-name" data-i18n="processVac">Vacuum tempering</span>
+              <span class="process-note" data-i18n="processVacNote">230 °C in this history</span>
+            </label>
+          </div>
+          <div id="furnace-fields" class="furnace-fields">
+            <label class="field">
+              <span data-i18n="temperTemp">Tempering temperature</span>
+              <span class="entry">
+                <input id="temper-c" type="number" min="0" max="600" step="1" value="200" inputmode="decimal" aria-describedby="temper-hint">
+                <span class="unit">°C</span>
+              </span>
+            </label>
+            <label class="field">
+              <span data-i18n="hold">Hold</span>
+              <span class="entry">
+                <input id="temper-h" type="number" min="0" max="24" step="0.5" value="1" inputmode="decimal" aria-describedby="temper-hint">
+                <span class="unit">h</span>
+              </span>
+            </label>
+          </div>
+          <div id="vacuum-spec" class="vacuum-spec" hidden>
+            <p class="vacuum-temp">230<span class="vacuum-unit">°C</span></p>
+            <p class="vacuum-copy" data-i18n="vacuumCopy">The vacuum temper recorded on these axles.</p>
+          </div>
+        </div>
+        <p id="temper-hint" class="hint" hidden></p>
+      </form>
+      <p id="measure-note" class="note" role="status"></p>
+      <p class="group-title" data-i18n="groupTests">From these axle tests</p>
+      <div id="measure-results" class="figures"></div>
+      <p class="group-title" data-i18n="groupHardness">From this hardness</p>
+      <p class="group-copy" data-i18n="copyHardness">Rockwell C, Brinell, and tensile strength follow DIN EN ISO 18265 Table A.1 for unalloyed and low-alloy steel. They were not measured on these axles. 4Cr13 and X46CrS13 are martensitic stainless, so treat the conversion as a guide. Brinell and tensile strength stop at 650 HV10, where that table stops. Tensile strength scatters by about ±85 N/mm².</p>
+      <div id="measure-converted" class="figures"></div>
+      <p class="group-title" data-i18n="groupImpact">Impact</p>
+      <p class="group-copy" data-i18n="copyImpact">The marked step is where this hardness sits among the axle tests.</p>
+      <p id="impact-warn" class="note is-warn" hidden></p>
+      <div id="measure-impact"></div>
+      <figure class="chart-card">
+        <figcaption data-i18n="capScatter">Ductility against hardness in this test history. The line is the trend through the tests. Each colour is a temper.</figcaption>
+        <div id="measure-chart"></div>
+      </figure>
+      <figure class="chart-card">
+        <figcaption id="compare-caption">Comparison of hardness, bending force, and ductility across the testing groups.</figcaption>
+        <div id="compare-plot"></div>
+      </figure>
+    </section>
+
+    <section id="panel-target" class="panel" hidden>
+      <div class="panel-head">
+        <h1 data-i18n="hTarget">From the property you need</h1>
+        <p data-i18n="pTarget">Name a ductility or an average bending force. The desk returns a temper that was actually run, and the hardness those axles had.</p>
+      </div>
+      <form id="target-form" class="controls">
+        <div class="switch" role="radiogroup" data-i18n-aria="ariaTarget" aria-label="Target property">
+          <label><input type="radio" name="kind" value="ductility" checked> <span data-i18n="kindDuct">Ductility</span></label>
+          <label><input type="radio" name="kind" value="force"> <span data-i18n="kindForce">Bending force</span></label>
+        </div>
+        <label class="field" id="target-field">
+          <span id="target-label">Ductility %</span>
+          <input id="target-value" type="number" min="10" max="50" step="0.5" value="30">
+        </label>
+      </form>
+      <p id="target-note" class="note" role="status"></p>
+      <div id="target-results" class="figures"></div>
+      <p class="group-title" data-i18n="groupAim">At the hardness to aim for</p>
+      <div id="target-converted" class="figures"></div>
+      <p class="group-title" data-i18n="groupImpactTemper">Impact at that temper</p>
+      <div id="target-impact"></div>
+      <div class="table-wrap">
+        <table id="target-table">
+          <caption data-i18n="capTempers">Every recorded temper, nearest first</caption>
+          <thead>
+            <tr>
+              <th data-i18n="thTemper">Temper</th>
+              <th data-i18n="thAxles">Axles</th>
+              <th>HV10</th>
+              <th data-i18n="thDuct">Ductility</th>
+              <th data-i18n="thBrit">Brittleness</th>
+              <th data-i18n="thForce">Avg force</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="panel-batch" class="panel" hidden>
+      <div class="panel-head">
+        <h1 data-i18n="hFile">From an Excel or CSV file</h1>
+        <p data-i18n="pFile">Drop a sheet of hardness readings. Temper columns such as Series Tempering and Additional Tempering are read as they were written in the laboratory. If the sheet already has ductility or bending force, the desk shows how far each estimate sits from the measurement.</p>
+      </div>
+      <div id="drop" class="drop" tabindex="0" role="button" data-i18n-aria="ariaUpload" aria-label="Upload an Excel or CSV file">
+        <p class="drop-title" data-i18n="dropTitle">Drop the file here</p>
+        <p class="drop-copy" data-i18n="dropCopy">Excel .xlsx or .csv. The first sheet is read. Save a Word or PDF table as Excel before uploading.</p>
+        <input id="file" type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+      </div>
+      <div id="mapper" class="mapper" hidden></div>
+      <p id="batch-note" class="note" role="status"></p>
+      <div id="batch-summary" class="figures"></div>
+      <div class="table-actions" id="batch-actions" hidden>
+        <button type="button" id="download" class="button" data-i18n="download">Download the analysis</button>
+      </div>
+      <div class="table-wrap" id="batch-wrap" hidden>
+        <table id="batch-table">
+          <caption data-i18n="capBatch">First 40 rows. HRC and tensile strength are the ISO 18265 conversion of the hardness. Tensile strength is blank above 650 HV10. Impact is Low below 22% ductility, Moderate from 22 to 33%, and Higher above 33%.</caption>
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="panel-method" class="panel" hidden>
+      <div class="deck" id="deck">
+        <div class="deck-top">
+          <p class="deck-count" id="slide-count">1 / 6</p>
+          <div class="deck-nav">
+            <button type="button" id="slide-prev" data-i18n="deckPrev">Back</button>
+            <button type="button" id="slide-next" data-i18n="deckNext">Next</button>
+          </div>
+        </div>
+
+        <article class="slide">
+          <p class="slide-kicker" data-i18n="s1k">01 · The models</p>
+          <h2 data-i18n="s1h">Ridge explains 90% of the ductility</h2>
+          <p class="lead" data-i18n="s1p">Ductility was measured, and six models learned it from the chemistry, the hardness, and the bending force on the same axle. On the test rows Ridge explains 90.02% of the spread. Linear lands on the same figure.</p>
+          <div class="figures method-facts">
+            <div class="figure"><span class="label" data-i18n="factKindLabel">Kind of learning</span><span class="value" data-i18n="factKind">Supervised</span></div>
+            <div class="figure"><span class="label" data-i18n="factChosenLabel">Chosen model</span><span class="value" data-i18n="factChosen">Ridge</span></div>
+            <div class="figure"><span class="label" data-i18n="factModelLabel">Test result</span><span class="value" data-i18n="factModel">90.02%</span></div>
+            <div class="figure"><span class="label" data-i18n="factSplitLabel">Split</span><span class="value" data-i18n="factSplit">80 / 20</span></div>
+          </div>
+        </article>
+
+        <article class="slide" hidden>
+          <p class="slide-kicker" data-i18n="s2k">02 · The split</p>
+          <h2 data-i18n="s2h">Eight rows in ten to train</h2>
+          <p class="lead" data-i18n="s2p">Seed 42. Each row is placed at random. The score is the share of the ductility spread on the 77,000 rows the models did not train on.</p>
+          <div class="figures">
+            <div class="figure"><span class="label" data-i18n="splitTrain">Training</span><span class="value" data-i18n="nTrain">308,000</span></div>
+            <div class="figure"><span class="label" data-i18n="splitTest">Test</span><span class="value" data-i18n="nTest">77,000</span></div>
+            <div class="figure"><span class="label" data-i18n="splitSeed">Seed</span><span class="value" data-i18n="nSeed">42</span></div>
+          </div>
+        </article>
+
+        <article class="slide" hidden>
+          <p class="slide-kicker" data-i18n="s3k">03 · The test</p>
+          <h2 data-i18n="s3h">Which model scored highest</h2>
+          <p class="lead" data-i18n="s3p">Each percent is the share of the ductility spread that model explains on the test rows. Ridge is the one the notebook kept.</p>
+          <div id="chart-r2" class="rank"></div>
+        </article>
+
+        <article class="slide" hidden>
+          <p class="slide-kicker" data-i18n="s4k">04 · Training and test</p>
+          <h2 data-i18n="s4h">The test holds the training figure</h2>
+          <p class="lead" data-i18n="s4p">Ridge explains 89.96% on the rows it trained on and 90.02% on the test. The average miss on the test is 1.59 ductility points.</p>
+          <div class="figures">
+            <div class="figure"><span class="label" data-i18n="ridgeTrainLabel">Training</span><span class="value" data-i18n="ridgeTrain">89.96%</span></div>
+            <div class="figure"><span class="label" data-i18n="ridgeTestLabel">Test</span><span class="value" data-i18n="ridgeTest">90.02%</span></div>
+            <div class="figure"><span class="label" data-i18n="ridgeMissLabel">Average miss</span><span class="value" data-i18n="ridgeMiss">± 1.59</span></div>
+          </div>
+        </article>
+
+        <article class="slide" hidden>
+          <p class="slide-kicker" data-i18n="s5k">05 · The diagnosis</p>
+          <h2 data-i18n="s5h">The chosen model holds</h2>
+          <div class="verdict">
+            <div class="verdict-card">
+              <span class="label" data-i18n="underLabel">Underfitting</span>
+              <span class="value" data-i18n="underValue">No</span>
+              <p data-i18n="underP">Training is 89.96%. The line already explains the rows it was shown.</p>
+            </div>
+            <div class="verdict-card">
+              <span class="label" data-i18n="overLabel">Overfitting</span>
+              <span class="value" data-i18n="overValue">No</span>
+              <p data-i18n="overP">Test is 90.02%, level with training. Random Forest trained at 94.80% and tested at 89.84%, so Ridge is the fit that held.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="slide" hidden>
+          <p class="slide-kicker" data-i18n="s6k">06 · Brittleness</p>
+          <h2 data-i18n="s6h">The same 90% on the other target</h2>
+          <div class="figures">
+            <div class="figure"><span class="label" data-i18n="trapHardLabel">Chosen model</span><span class="value" data-i18n="trapHard">Linear</span></div>
+            <div class="figure"><span class="label" data-i18n="trapFullLabel">Test</span><span class="value" data-i18n="trapFull">90.02%</span></div>
+            <div class="figure"><span class="label" data-i18n="trapPageLabel">Average miss</span><span class="value" data-i18n="trapPage">± 1.59</span></div>
+          </div>
+          <p class="lead" data-i18n="s6p">Brittleness on these axles is 100 minus ductility. Linear regression explains 90.02% of that spread on the same test rows, and misses by 1.59 points.</p>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <footer class="foot">
+    <p data-i18n="foot">Estimates from the axle test history. A held-out testing group can miss these figures. This is not a release signature.</p>
+  </footer>
+
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script src="model.js?v=16"></script>
+  <script src="app.js?v=21"></script>
+</body>
+</html>
