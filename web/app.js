@@ -97,7 +97,7 @@ const COPY = {
     proc4p: "Linear, Ridge, Random Forest, XGBoost, LightGBM, and a stack of the tree models.",
     s1k: "01 · The score",
     s1h: "The score",
-    s1p: "The first bar is training, the second is the test. Ridge holds 90% on both.",
+    s1p: "The first bar is training, the second is the test. Linear trains at 89.96% and tests at 90.02%. Ridge is the same pair.",
     legDuct: "Ductility",
     legBrit: "Brittleness",
     legTrain: "Training",
@@ -303,7 +303,7 @@ const COPY = {
     proc4p: "Linear, Ridge, Random Forest, XGBoost, LightGBM und ein Stack der Baummodelle.",
     s1k: "01 · Die Zahl",
     s1h: "Die Zahl",
-    s1p: "Der erste Balken ist das Training, der zweite der Test. Ridge hält auf beiden 90 %.",
+    s1p: "Der erste Balken ist das Training, der zweite der Test. Linear trainiert bei 89,96 % und testet bei 90,02 %. Ridge ist dasselbe Paar.",
     legDuct: "Duktilität",
     legBrit: "Sprödigkeit",
     legTrain: "Training",
@@ -1195,7 +1195,7 @@ function chartScore() {
   const frame = vizFrame(ymin, ymax);
   const percent = (value) => value * 100;
   const bars = FIT.map((row, index) => {
-    const label = `<text x="${frame.x(index).toFixed(1)}" y="48" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(percent(row.train), 1)} / ${formatNumber(percent(row.test), 1)}</text>`;
+    const label = `<text x="${frame.x(index).toFixed(1)}" y="48" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(percent(row.train), 2)} / ${formatNumber(percent(row.test), 2)}</text>`;
     return vizBar(frame.x(index) - 9, frame.y(percent(row.train)), frame.y(0), 16, "var(--duct)") +
       vizBar(frame.x(index) + 9, frame.y(percent(row.test)), frame.y(0), 16, "var(--blue)") +
       label;
