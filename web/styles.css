@@ -517,6 +517,18 @@ select:focus,
   color: var(--muted);
 }
 
+.viz svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.viz-note {
+  margin: 4px 0 0;
+  max-width: 68ch;
+  color: var(--muted);
+}
+
 .score-chart svg {
   display: block;
   width: 100%;

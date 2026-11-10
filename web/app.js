@@ -85,45 +85,28 @@ const COPY = {
     factInverse: "A lookup",
     deckPrev: "Back",
     deckNext: "Next",
-    s1k: "01 · The learning",
-    s1h: "Supervised regression",
-    s1p: "Hardness is known before the axle is bent. Ductility and bending force were already measured, and the model learns that line. It is not a cluster model, and it is not a reinforcement loop.",
-    s2k: "02 · The split",
-    s2h: "The families do not mix",
-    s2p: "Seed 42. Every sample of one testing family stays on the same side. The score is taken on Testing Group D and Testing Group E, both Version-6.",
-    splitTrain: "Training",
-    splitVal: "Validation",
-    splitTest: "Test",
-    nTrain: "230,455",
-    nVal: "76,962",
-    nTest: "77,583",
-    s3k: "03 · Training, validation, test",
-    s3h: "How much of the pattern the line explains",
-    s3p: "56% means the line accounts for 56% of the spread in ductility on the training families. That is the share of the pattern, not a count of right answers. On validation and on test the line sits below the average of those families, so the share is none.",
-    shareNone: "0%",
-    shareOf: "of the ductility pattern, on the families the model was shown",
-    shareWorse: "Worse than the average ductility of these families. The share is none.",
-    shareRecorded: "Recorded R² {n}",
-    s4k: "04 · The absolute miss",
-    s4h: "The miss stays near three points",
-    s4p: "Mean absolute error, in ductility points. It does not blow up on the holdout. The failure is where those families sit, and that is what pushes R² below zero.",
-    s5k: "05 · The diagnosis",
-    s5h: "Overfitting, not underfitting",
-    underLabel: "Underfitting",
-    underValue: "No",
-    underP: "On the training families the line explains 56% of the ductility spread. An underfit model would explain almost none of it there too.",
-    overLabel: "Overfitting",
-    overValue: "Yes",
-    overP: "On the families it never saw, the share is none. The line stays with the families it was shown.",
-    s6k: "06 · What is not used",
-    s6h: "A better score that cannot be served",
-    trapHardLabel: "Hardness only, test families",
-    trapHard: "0%",
-    trapFullLabel: "With bending force, test families",
-    trapFull: "39%",
-    trapPageLabel: "This page, test MAE",
-    trapPage: "± 3.3",
-    s6p: "Force and ductility come from the same test. On the training rows the correlation is 0.96, so that 39% is leakage, not a model to serve. Hardness alone explains none of the test spread. This page fits Ridge and, on the same holdout, misses ductility by 3.3 points and average force by 480 N.",
+    s1k: "01 · The score",
+    s1h: "About 90% of the spread",
+    s1p: "Both targets sit near 90%, and no model reaches the dashed 95% line.",
+    legDuct: "Ductility",
+    legBrit: "Brittleness",
+    legTrain: "Training",
+    legTest: "Test",
+    s2k: "02 · The error",
+    s2h: "How far the prediction sits",
+    s2p: "Lower is better. Linear and Ridge have the smallest error, at 1.99.",
+    s3k: "03 · Overfitting",
+    s3h: "Training against the test",
+    s3p: "Random Forest trains at 95% and tests at 90%. Ridge stays level.",
+    s4k: "04 · The gap",
+    s4h: "Training minus test",
+    s4p: "A bar above zero means the model remembered the training rows. Random Forest is that model.",
+    s5k: "05 · Complexity",
+    s5h: "A straight line matches the stack",
+    s5p: "From the straight line on the left to the stack on the right, the test stays at 90%.",
+    s6k: "06 · The miss",
+    s6h: "The error in ductility points",
+    s6p: "The typical miss for the chosen Ridge model is 1.59 ductility points.",
     step1t: "The table",
     step1p: "385,000 axle tests. 4Cr13 accounts for 359,178 rows and X46CrS13 for 25,822. Each row has a mean HV10, a bending force, a ductility, and the temper written as Series Tempering and Additional Tempering.",
     step2t: "The temper, as written",
@@ -290,45 +273,28 @@ const COPY = {
     factInverse: "Eine Suche",
     deckPrev: "Zurück",
     deckNext: "Weiter",
-    s1k: "01 · Das Lernen",
-    s1h: "Überwachte Regression",
-    s1p: "Die Härte steht fest, bevor die Achse gebogen wird. Duktilität und Biegekraft wurden bereits gemessen, und das Modell lernt diese Gerade. Es ist kein Cluster-Modell und keine Verstärkungsschleife.",
-    s2k: "02 · Die Aufteilung",
-    s2h: "Die Familien mischen sich nicht",
-    s2p: "Seed 42. Jede Probe einer Prüffamilie bleibt auf derselben Seite. Bewertet wird an Testing Group D und Testing Group E, beide Version-6.",
-    splitTrain: "Training",
-    splitVal: "Validierung",
-    splitTest: "Test",
-    nTrain: "230.455",
-    nVal: "76.962",
-    nTest: "77.583",
-    s3k: "03 · Training, Validierung, Test",
-    s3h: "Wie viel vom Muster die Gerade erklärt",
-    s3p: "56 % heißt: auf den Trainingsfamilien erklärt die Gerade 56 % der Streuung der Duktilität. Das ist der Anteil des Musters, keine Trefferquote. Auf Validierung und Test liegt die Gerade unter dem Mittelwert dieser Familien, der Anteil ist also keins.",
-    shareNone: "0 %",
-    shareOf: "des Duktilitätsmusters, auf den Familien, die das Modell gesehen hat",
-    shareWorse: "Schlechter als die mittlere Duktilität dieser Familien. Der Anteil ist keins.",
-    shareRecorded: "Gemessene R² {n}",
-    s4k: "04 · Der absolute Fehler",
-    s4h: "Der Fehler bleibt bei etwa drei Punkten",
-    s4p: "Mittlerer absoluter Fehler, in Duktilitätspunkten. Auf der zurückgehaltenen Menge explodiert er nicht. Der Fehlschlag liegt darin, wo diese Familien sitzen, und das drückt die R² unter null.",
-    s5k: "05 · Die Diagnose",
-    s5h: "Überanpassung, nicht Unteranpassung",
-    underLabel: "Unteranpassung",
-    underValue: "Nein",
-    underP: "Auf den Trainingsfamilien erklärt die Gerade 56 % der Streuung der Duktilität. Ein unterangepasstes Modell würde dort ebenfalls fast nichts erklären.",
-    overLabel: "Überanpassung",
-    overValue: "Ja",
-    overP: "Auf den Familien, die sie nie gesehen hat, ist der Anteil keins. Die Gerade bleibt bei den Familien, die sie gesehen hat.",
-    s6k: "06 · Was nicht verwendet wird",
-    s6h: "Eine bessere Zahl, die nicht ausgeliefert werden darf",
-    trapHardLabel: "Nur Härte, Testfamilien",
-    trapHard: "0 %",
-    trapFullLabel: "Mit Biegekraft, Testfamilien",
-    trapFull: "39 %",
-    trapPageLabel: "Diese Seite, Test-MAE",
-    trapPage: "± 3,3",
-    s6p: "Kraft und Duktilität stammen aus derselben Prüfung. Auf den Trainingszeilen liegt die Korrelation bei 0,96, die 39 % sind also ein Durchschlagen, kein Modell zum Ausliefern. Nur die Härte erklärt nichts von der Teststreuung. Diese Seite passt Ridge an und verfehlt auf derselben zurückgehaltenen Menge die Duktilität um 3,3 Punkte und die mittlere Kraft um 480 N.",
+    s1k: "01 · Die Zahl",
+    s1h: "Etwa 90 % der Streuung",
+    s1p: "Beide Ziele liegen bei etwa 90 %, und kein Modell erreicht die gestrichelte Linie bei 95 %.",
+    legDuct: "Duktilität",
+    legBrit: "Sprödigkeit",
+    legTrain: "Training",
+    legTest: "Test",
+    s2k: "02 · Der Fehler",
+    s2h: "Wie weit die Vorhersage liegt",
+    s2p: "Niedriger ist besser. Linear und Ridge haben den kleinsten Fehler, bei 1,99.",
+    s3k: "03 · Überanpassung",
+    s3h: "Training gegen den Test",
+    s3p: "Random Forest trainiert bei 95 % und testet bei 90 %. Ridge bleibt auf einer Höhe.",
+    s4k: "04 · Der Abstand",
+    s4h: "Training minus Test",
+    s4p: "Ein Balken über null heißt, das Modell hat sich die Trainingszeilen gemerkt. Das ist Random Forest.",
+    s5k: "05 · Komplexität",
+    s5h: "Eine Gerade reicht an den Stack heran",
+    s5p: "Von der Geraden links bis zum Stack rechts bleibt der Test bei 90 %.",
+    s6k: "06 · Der Fehlbetrag",
+    s6h: "Der Fehler in Duktilitätspunkten",
+    s6p: "Der typische Fehler des gewählten Ridge-Modells beträgt 1,59 Duktilitätspunkte.",
     step1t: "Die Tabelle",
     step1p: "385.000 Achsenprüfungen. 4Cr13 stellt 359.178 Zeilen, X46CrS13 25.822. Jede Zeile trägt eine mittlere HV10, eine Biegekraft, eine Duktilität und das Anlassen, geschrieben als Series Tempering und Additional Tempering.",
     step2t: "Das Anlassen, wie es geschrieben wurde",
@@ -1133,70 +1099,157 @@ async function loadFile(file) {
   }
 }
 
-const R2_SCORES = [
-  ["splitTrain", 0.563946, "var(--blue)"],
-  ["splitVal", -0.390509, "var(--hv-ink)"],
-  ["splitTest", -1.561175, "var(--force)"],
+const FIT = [
+  { name: "Linear", train: 0.8996, test: 0.900235, rmse: 1.989618, mae: 1.589506, brit: 0.900235, britRmse: 1.989618 },
+  { name: "Ridge", train: 0.8996, test: 0.900235, rmse: 1.989618, mae: 1.589506, brit: null, britRmse: null },
+  { name: "RF", train: 0.9480, test: 0.898443, rmse: 2.007406, mae: 1.602611, brit: 0.898664, britRmse: 2.005219 },
+  { name: "XGB", train: 0.9160, test: 0.898683, rmse: 2.005036, mae: 1.601419, brit: 0.898456, britRmse: 2.007282 },
+  { name: "LGB", train: 0.9006, test: 0.900093, rmse: 1.991035, mae: 1.590690, brit: 0.900047, britRmse: 1.991490 },
+  { name: "Stack", train: 0.9062, test: 0.899969, rmse: 1.992265, mae: 1.5915, brit: 0.899968, britRmse: 1.992277 },
 ];
 
-const MAE_SCORES = [
-  ["splitTrain", 3.706891, "var(--blue)"],
-  ["splitVal", 2.945184, "var(--hv-ink)"],
-  ["splitTest", 3.284173, "var(--force)"],
-];
+function vizSvg(inner, w, h) {
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif">${inner}</svg>`;
+}
 
-function renderShare() {
-  const host = document.getElementById("chart-r2");
-  if (!host) return;
-  host.innerHTML = R2_SCORES.map(([key, r2]) => {
-    const held = r2 > 0;
-    const pct = Math.round(r2 * 100);
-    const big = held ? (LANG === "de" ? `${pct} %` : `${pct}%`) : t("shareNone");
-    return `<div class="share">
-      <span class="label">${t(key)}</span>
-      <span class="value">${big}</span>
-      <span class="share-track" aria-hidden="true"><span style="width:${held ? pct : 0}%"></span></span>
-      <p>${held ? t("shareOf") : t("shareWorse")}</p>
-      <span class="share-r2">${t("shareRecorded", { n: formatNumber(r2, 2) })}</span>
-    </div>`;
+function vizFrame(ymin, ymax) {
+  const W = 720;
+  const H = 300;
+  const L = 52;
+  const R = 16;
+  const T = 36;
+  const B = 34;
+  const plotW = W - L - R;
+  const plotH = H - T - B;
+  const y = (value) => T + ((ymax - value) / (ymax - ymin)) * plotH;
+  const slot = plotW / FIT.length;
+  const x = (index) => L + slot * index + slot / 2;
+  return { W, H, L, R, T, plotW, plotH, y, x };
+}
+
+function vizAxis(frame, ticks, digits) {
+  const grid = ticks.map((tick) => {
+    const yy = frame.y(tick);
+    return `<line x1="${frame.L}" x2="${frame.L + frame.plotW}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}" stroke="var(--chart-grid)"/>
+      <text x="${frame.L - 8}" y="${(yy + 4).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">${formatNumber(tick, digits)}</text>`;
+  }).join("");
+  const names = FIT.map((row, index) => `<text x="${frame.x(index).toFixed(1)}" y="${frame.H - 12}" text-anchor="middle" fill="${row.name === "Ridge" ? "var(--ink)" : "var(--muted)"}" font-size="12" font-weight="${row.name === "Ridge" ? 500 : 400}">${row.name}</text>`).join("");
+  return grid + names;
+}
+
+function vizLegend(items) {
+  return items.map((item, index) => {
+    const x = 52 + index * 124;
+    const swatch = item.line
+      ? `<line x1="${x}" x2="${x + 16}" y1="14" y2="14" stroke="${item.color}" stroke-width="2"/>`
+      : `<rect x="${x}" y="8" width="12" height="10" fill="${item.color}"/>`;
+    return `${swatch}<text x="${x + 22}" y="17" fill="var(--muted)" font-size="12">${item.label}</text>`;
   }).join("");
 }
 
-function scoreChart(rows, min, max, digits, signed) {
-  const width = 720;
-  const height = 300;
-  const left = 48;
-  const right = 16;
-  const top = 24;
-  const bottom = 44;
-  const plotW = width - left - right;
-  const plotH = height - top - bottom;
-  const y = (value) => top + ((max - value) / (max - min)) * plotH;
-  const base = y(signed ? 0 : min);
-  const slot = plotW / rows.length;
-  const barW = 64;
-  const bars = rows.map(([key, value, tone], index) => {
-    const cx = left + slot * index + slot / 2;
-    const yVal = y(value);
-    const yBar = Math.min(yVal, base);
-    const barH = Math.max(2, Math.abs(base - yVal));
-    const labelY = value >= 0 ? yBar - 8 : yVal + 18;
-    return `
-      <rect x="${(cx - barW / 2).toFixed(1)}" y="${yBar.toFixed(1)}" width="${barW}" height="${barH.toFixed(1)}" fill="${tone}"/>
-      <text x="${cx.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="14" font-weight="500" fill="var(--ink)">${formatNumber(value, digits)}</text>
-      <text x="${cx.toFixed(1)}" y="${height - 14}" text-anchor="middle" font-size="12" fill="var(--muted)">${t(key)}</text>`;
+function vizBar(cx, yValue, yBase, width, color) {
+  const top = Math.min(yValue, yBase);
+  const height = Math.max(1.5, Math.abs(yBase - yValue));
+  return `<rect x="${(cx - width / 2).toFixed(1)}" y="${top.toFixed(1)}" width="${width}" height="${height.toFixed(1)}" fill="${color}"/>`;
+}
+
+function chartScore() {
+  const ymin = 0.888;
+  const ymax = 0.962;
+  const frame = vizFrame(ymin, ymax);
+  const bars = FIT.map((row, index) => {
+    const pair = row.brit != null;
+    const duct = vizBar(frame.x(index) + (pair ? -8 : 0), frame.y(row.test), frame.y(ymin), 14, "var(--blue)");
+    const brit = pair ? vizBar(frame.x(index) + 8, frame.y(row.brit), frame.y(ymin), 14, "var(--force)") : "";
+    return duct + brit;
   }).join("");
-  const axis = `<line x1="${left}" x2="${left + plotW}" y1="${base.toFixed(1)}" y2="${base.toFixed(1)}" stroke="var(--ink)" stroke-width="1"/>
-    <text x="${left - 8}" y="${(base + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--muted)">0</text>`;
-  return `<svg viewBox="0 0 ${width} ${height}" role="img">${axis}${bars}</svg>`;
+  const y95 = frame.y(0.95);
+  const mark = `<line x1="${frame.L}" x2="${frame.L + frame.plotW}" y1="${y95.toFixed(1)}" y2="${y95.toFixed(1)}" stroke="var(--dash)" stroke-dasharray="4 4"/>
+    <text x="${frame.L + frame.plotW}" y="${(y95 - 6).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">0.95</text>`;
+  return vizSvg(vizLegend([{ label: t("legDuct"), color: "var(--blue)" }, { label: t("legBrit"), color: "var(--force)" }]) + vizAxis(frame, [0.89, 0.91, 0.93, 0.95], 2) + bars + mark, frame.W, frame.H);
+}
+
+function chartRmse() {
+  const ymin = 1.895;
+  const ymax = 2.12;
+  const frame = vizFrame(ymin, ymax);
+  const bars = FIT.map((row, index) => {
+    const pair = row.britRmse != null;
+    const duct = vizBar(frame.x(index) + (pair ? -8 : 0), frame.y(row.rmse), frame.y(ymin), 14, "var(--blue)");
+    const brit = pair ? vizBar(frame.x(index) + 8, frame.y(row.britRmse), frame.y(ymin), 14, "var(--force)") : "";
+    return duct + brit;
+  }).join("");
+  return vizSvg(vizLegend([{ label: t("legDuct"), color: "var(--blue)" }, { label: t("legBrit"), color: "var(--force)" }]) + vizAxis(frame, [1.9, 1.95, 2, 2.05, 2.1], 2) + bars, frame.W, frame.H);
+}
+
+function chartFit() {
+  const ymin = 0.888;
+  const ymax = 0.962;
+  const frame = vizFrame(ymin, ymax);
+  const line = (key, color) => {
+    const points = FIT.map((row, index) => `${frame.x(index).toFixed(1)},${frame.y(row[key]).toFixed(1)}`).join(" ");
+    const dots = FIT.map((row, index) => `<circle cx="${frame.x(index).toFixed(1)}" cy="${frame.y(row[key]).toFixed(1)}" r="${row.name === "RF" && key === "train" ? 6 : 4}" fill="${color}"/>`).join("");
+    return `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="2"/>${dots}`;
+  };
+  const y95 = frame.y(0.95);
+  const mark = `<line x1="${frame.L}" x2="${frame.L + frame.plotW}" y1="${y95.toFixed(1)}" y2="${y95.toFixed(1)}" stroke="var(--dash)" stroke-dasharray="4 4"/>`;
+  return vizSvg(vizLegend([{ label: t("legTrain"), color: "var(--duct)", line: true }, { label: t("legTest"), color: "var(--force)", line: true }]) + vizAxis(frame, [0.89, 0.91, 0.93, 0.95], 2) + mark + line("train", "var(--duct)") + line("test", "var(--force)"), frame.W, frame.H);
+}
+
+function chartGap() {
+  const ymin = -1.4;
+  const ymax = 6.5;
+  const frame = vizFrame(ymin, ymax);
+  const zero = frame.y(0);
+  const bars = FIT.map((row, index) => {
+    const gap = (row.train - row.test) * 100;
+    const color = gap > 0.5 ? "var(--force)" : "var(--blue)";
+    const labelY = gap >= 0 ? frame.y(gap) - 8 : frame.y(gap) + 16;
+    return vizBar(frame.x(index), frame.y(gap), zero, 26, color) +
+      `<text x="${frame.x(index).toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" fill="var(--ink)" font-size="12" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(gap, 2)}</text>`;
+  }).join("");
+  const base = `<line x1="${frame.L}" x2="${frame.L + frame.plotW}" y1="${zero.toFixed(1)}" y2="${zero.toFixed(1)}" stroke="var(--ink)"/>`;
+  return vizSvg(vizAxis(frame, [-1, 0, 2, 4, 6], 0) + base + bars, frame.W, frame.H);
+}
+
+function chartComplex() {
+  const ymin = 0.888;
+  const ymax = 0.962;
+  const frame = vizFrame(ymin, ymax);
+  const dots = FIT.map((row, index) => {
+    const chosen = row.name === "Ridge";
+    return `<circle cx="${frame.x(index).toFixed(1)}" cy="${frame.y(row.test).toFixed(1)}" r="${chosen ? 7 : 5}" fill="${chosen ? "var(--blue)" : "var(--hv-ink)"}"/>`;
+  }).join("");
+  const y95 = frame.y(0.95);
+  const mark = `<line x1="${frame.L}" x2="${frame.L + frame.plotW}" y1="${y95.toFixed(1)}" y2="${y95.toFixed(1)}" stroke="var(--dash)" stroke-dasharray="4 4"/>
+    <text x="${frame.L + frame.plotW}" y="${(y95 - 6).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">0.95</text>`;
+  return vizSvg(vizAxis(frame, [0.89, 0.91, 0.93, 0.95], 2) + mark + dots, frame.W, frame.H);
+}
+
+function chartMae() {
+  const ymin = 0;
+  const ymax = 2.3;
+  const frame = vizFrame(ymin, ymax);
+  const bars = FIT.map((row, index) => {
+    const chosen = row.name === "Ridge";
+    const labelY = frame.y(row.mae) - 8;
+    return vizBar(frame.x(index), frame.y(row.mae), frame.y(0), 28, chosen ? "var(--blue)" : "var(--hv-ink)") +
+      `<text x="${frame.x(index).toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" fill="var(--ink)" font-size="12" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(row.mae, 2)}</text>`;
+  }).join("");
+  return vizSvg(vizAxis(frame, [0, 0.5, 1, 1.5, 2], 1) + bars, frame.W, frame.H);
 }
 
 function renderMethod() {
-  const r2 = document.getElementById("chart-r2");
-  const mae = document.getElementById("chart-mae");
-  if (!r2 || !mae) return;
-  renderShare();
-  mae.innerHTML = scoreChart(MAE_SCORES, 0, 5, 2, false);
+  const mount = (id, html) => {
+    const host = document.getElementById(id);
+    if (host) host.innerHTML = html;
+  };
+  mount("c-r2", chartScore());
+  mount("c-rmse", chartRmse());
+  mount("c-fit", chartFit());
+  mount("c-gap", chartGap());
+  mount("c-cx", chartComplex());
+  mount("c-mae", chartMae());
 }
 
 let slideIndex = 0;
