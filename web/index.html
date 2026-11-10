@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=23">
+  <link rel="stylesheet" href="styles.css?v=24">
 </head>
 <body>
   <header class="top">
@@ -181,57 +181,61 @@
     </section>
 
     <section id="panel-method" class="panel" hidden>
-      <div class="deck" id="deck">
-        <div class="deck-top">
-          <p class="deck-count" id="slide-count">1 / 6</p>
-          <div class="deck-nav">
-            <button type="button" id="slide-prev" data-i18n="deckPrev">Back</button>
-            <button type="button" id="slide-next" data-i18n="deckNext">Next</button>
+      <header class="proc-head">
+        <h1 data-i18n="hMethod">How the model was built</h1>
+        <p data-i18n="pMethod">Ductility was already measured. Six models learned it from the chemistry, the hardness, and the bending force.</p>
+      </header>
+      <ol class="proc">
+        <li>
+          <h2 data-i18n="proc1t">The rows</h2>
+          <p data-i18n="proc1p">385,000 axles. Each row already carries a ductility and a brittleness.</p>
+        </li>
+        <li>
+          <h2 data-i18n="proc2t">The inputs</h2>
+          <p data-i18n="proc2p">Chemistry, hardness, bending force, the die, and the diameter.</p>
+        </li>
+        <li>
+          <h2 data-i18n="proc3t">The split</h2>
+          <p data-i18n="proc3p">Seed 42. 308,000 rows train the models, 77,000 score them. Then the inputs are scaled.</p>
+          <div class="split-bar" aria-hidden="true">
+            <span class="is-train" data-i18n="nTrain">308,000</span>
+            <span class="is-test" data-i18n="nTest">77,000</span>
           </div>
-        </div>
-
-        <article class="slide">
-          <p class="slide-kicker" data-i18n="s1k">01 · The score</p>
-          <h2 data-i18n="s1h">About 90% of the spread</h2>
+        </li>
+        <li>
+          <h2 data-i18n="proc4t">The models</h2>
+          <p data-i18n="proc4p">Linear, Ridge, Random Forest, XGBoost, LightGBM, and a stack of the tree models.</p>
+        </li>
+        <li>
+          <h2 data-i18n="s1h">The score</h2>
           <div id="c-r2" class="viz"></div>
-          <p class="viz-note" data-i18n="s1p">Both targets sit near 90%, and no model reaches the dashed 95% line.</p>
-        </article>
-
-        <article class="slide" hidden>
-          <p class="slide-kicker" data-i18n="s2k">02 · The error</p>
-          <h2 data-i18n="s2h">How far the prediction sits</h2>
+          <p class="viz-note" data-i18n="s1p">Both targets sit near 90%. None reaches 95%.</p>
+        </li>
+        <li>
+          <h2 data-i18n="s2h">The error</h2>
           <div id="c-rmse" class="viz"></div>
-          <p class="viz-note" data-i18n="s2p">Lower is better. Linear and Ridge have the smallest error, at 1.99.</p>
-        </article>
-
-        <article class="slide" hidden>
-          <p class="slide-kicker" data-i18n="s3k">03 · Overfitting</p>
-          <h2 data-i18n="s3h">Training against the test</h2>
+          <p class="viz-note" data-i18n="s2p">Lower is better. Linear and Ridge are the smallest, at 1.99.</p>
+        </li>
+        <li>
+          <h2 data-i18n="s3h">Training and the test</h2>
           <div id="c-fit" class="viz"></div>
-          <p class="viz-note" data-i18n="s3p">Random Forest trains at 95% and tests at 90%. Ridge stays level.</p>
-        </article>
-
-        <article class="slide" hidden>
-          <p class="slide-kicker" data-i18n="s4k">04 · The gap</p>
-          <h2 data-i18n="s4h">Training minus test</h2>
-          <div id="c-gap" class="viz"></div>
-          <p class="viz-note" data-i18n="s4p">A bar above zero means the model remembered the training rows. Random Forest is that model.</p>
-        </article>
-
-        <article class="slide" hidden>
-          <p class="slide-kicker" data-i18n="s5k">05 · Complexity</p>
-          <h2 data-i18n="s5h">A straight line matches the stack</h2>
+          <p class="viz-note" data-i18n="s3p">Random Forest rises in training and falls on the test. Ridge stays level.</p>
+        </li>
+        <li>
+          <h2 data-i18n="s5h">Simple and complex</h2>
           <div id="c-cx" class="viz"></div>
-          <p class="viz-note" data-i18n="s5p">From the straight line on the left to the stack on the right, the test stays at 90%.</p>
-        </article>
-
-        <article class="slide" hidden>
-          <p class="slide-kicker" data-i18n="s6k">06 · The miss</p>
-          <h2 data-i18n="s6h">The error in ductility points</h2>
-          <div id="c-mae" class="viz"></div>
-          <p class="viz-note" data-i18n="s6p">The typical miss for the chosen Ridge model is 1.59 ductility points.</p>
-        </article>
-      </div>
+          <p class="viz-note" data-i18n="s5p">The straight line scores the same test as the stack.</p>
+        </li>
+        <li>
+          <h2 data-i18n="keptT">What was kept</h2>
+          <div class="figures">
+            <div class="figure"><span class="label" data-i18n="keptDuctLabel">Ductility</span><span class="value" data-i18n="keptDuct">Ridge · 90.02%</span></div>
+            <div class="figure"><span class="label" data-i18n="keptBritLabel">Brittleness</span><span class="value" data-i18n="keptBrit">Linear · 90.02%</span></div>
+            <div class="figure"><span class="label" data-i18n="keptMissLabel">Typical miss</span><span class="value" data-i18n="keptMiss">± 1.59</span></div>
+          </div>
+          <p class="viz-note" data-i18n="keptP">Ridge is the ductility model. Linear is the brittleness model. The miss is 1.59 points.</p>
+        </li>
+      </ol>
     </section>
   </div>
 
@@ -241,6 +245,6 @@
 
   <script src="vendor/xlsx.full.min.js"></script>
   <script src="model.js?v=16"></script>
-  <script src="app.js?v=23"></script>
+  <script src="app.js?v=24"></script>
 </body>
 </html>

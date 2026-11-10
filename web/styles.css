@@ -529,6 +529,96 @@ select:focus,
   color: var(--muted);
 }
 
+.proc-head h1 {
+  margin: 0 0 8px;
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.proc-head p {
+  margin: 0 0 28px;
+  max-width: 62ch;
+  color: var(--muted);
+}
+
+.proc {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: proc;
+}
+
+.proc li {
+  counter-increment: proc;
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 8px 18px;
+  padding: 26px 0;
+  border-top: 1px solid var(--line);
+}
+
+.proc li::before {
+  content: counter(proc, decimal-leading-zero);
+  grid-column: 1;
+  grid-row: 1 / -1;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--blue);
+  padding-top: 6px;
+}
+
+.proc li > * {
+  grid-column: 2;
+}
+
+.proc h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.proc p {
+  margin: 0;
+  max-width: 68ch;
+  color: var(--muted);
+}
+
+.proc .viz,
+.proc .figures,
+.proc .split-bar {
+  margin-top: 16px;
+}
+
+.split-bar {
+  display: flex;
+  height: 40px;
+  max-width: 640px;
+}
+
+.split-bar span {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.split-bar .is-train {
+  width: 80%;
+  background: var(--blue);
+  color: var(--on-blue);
+}
+
+.split-bar .is-test {
+  width: 20%;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-left: 0;
+}
+
 .score-chart svg {
   display: block;
   width: 100%;

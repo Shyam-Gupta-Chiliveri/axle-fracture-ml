@@ -71,8 +71,8 @@ const COPY = {
     download: "Download the analysis",
     capBatch: "First 40 rows. HRC and tensile strength are the ISO 18265 conversion of the hardness. Tensile strength is blank above 650 HV10. Impact is Low below 22% ductility, Moderate from 22 to 33%, and Higher above 33%.",
     foot: "Estimates from the axle test history. A held-out testing group can miss these figures. This is not a release signature.",
-    hMethod: "How this desk was fit",
-    pMethod: "Supervised regression on these axle tests. The way back from a target, the hardness conversions, and the impact class are not further models.",
+    hMethod: "How the model was built",
+    pMethod: "Ductility was already measured. Six models learned it from the chemistry, the hardness, and the bending force.",
     factKindLabel: "Kind of learning",
     factKind: "Supervised",
     factModelLabel: "Test result",
@@ -85,28 +85,46 @@ const COPY = {
     factInverse: "A lookup",
     deckPrev: "Back",
     deckNext: "Next",
+    proc1t: "The rows",
+    proc1p: "385,000 axles. Each row already carries a ductility and a brittleness.",
+    proc2t: "The inputs",
+    proc2p: "Chemistry, hardness, bending force, the die, and the diameter.",
+    proc3t: "The split",
+    proc3p: "Seed 42. 308,000 rows train the models, 77,000 score them. Then the inputs are scaled.",
+    nTrain: "308,000",
+    nTest: "77,000",
+    proc4t: "The models",
+    proc4p: "Linear, Ridge, Random Forest, XGBoost, LightGBM, and a stack of the tree models.",
     s1k: "01 · The score",
-    s1h: "About 90% of the spread",
-    s1p: "Both targets sit near 90%, and no model reaches the dashed 95% line.",
+    s1h: "The score",
+    s1p: "Both targets sit near 90%. None reaches 95%.",
     legDuct: "Ductility",
     legBrit: "Brittleness",
     legTrain: "Training",
     legTest: "Test",
     s2k: "02 · The error",
-    s2h: "How far the prediction sits",
-    s2p: "Lower is better. Linear and Ridge have the smallest error, at 1.99.",
+    s2h: "The error",
+    s2p: "Lower is better. Linear and Ridge are the smallest, at 1.99.",
     s3k: "03 · Overfitting",
-    s3h: "Training against the test",
-    s3p: "Random Forest trains at 95% and tests at 90%. Ridge stays level.",
+    s3h: "Training and the test",
+    s3p: "Random Forest rises in training and falls on the test. Ridge stays level.",
     s4k: "04 · The gap",
     s4h: "Training minus test",
     s4p: "A bar above zero means the model remembered the training rows. Random Forest is that model.",
     s5k: "05 · Complexity",
-    s5h: "A straight line matches the stack",
-    s5p: "From the straight line on the left to the stack on the right, the test stays at 90%.",
+    s5h: "Simple and complex",
+    s5p: "The straight line scores the same test as the stack.",
     s6k: "06 · The miss",
     s6h: "The error in ductility points",
     s6p: "The typical miss for the chosen Ridge model is 1.59 ductility points.",
+    keptT: "What was kept",
+    keptDuctLabel: "Ductility",
+    keptDuct: "Ridge · 90.02%",
+    keptBritLabel: "Brittleness",
+    keptBrit: "Linear · 90.02%",
+    keptMissLabel: "Typical miss",
+    keptMiss: "± 1.59",
+    keptP: "Ridge is the ductility model. Linear is the brittleness model. The miss is 1.59 points.",
     step1t: "The table",
     step1p: "385,000 axle tests. 4Cr13 accounts for 359,178 rows and X46CrS13 for 25,822. Each row has a mean HV10, a bending force, a ductility, and the temper written as Series Tempering and Additional Tempering.",
     step2t: "The temper, as written",
@@ -259,8 +277,8 @@ const COPY = {
     download: "Auswertung herunterladen",
     capBatch: "Die ersten 40 Zeilen. HRC und Zugfestigkeit sind die ISO-18265-Umwertung der Härte. Die Zugfestigkeit bleibt über 650 HV10 leer. Die Schlagzähigkeit ist Niedrig unter 22 % Duktilität, Mittel von 22 bis 33 % und Höher über 33 %.",
     foot: "Schätzungen aus der Achsenprüfreihe. Eine zurückgehaltene Prüfgruppe kann von diesen Werten abweichen. Dies ist keine Freigabe.",
-    hMethod: "Wie dieser Platz angepasst wurde",
-    pMethod: "Überwachte Regression auf diesen Achsenprüfungen. Der Weg zurück von einem Zielwert, die Härteumwertung und die Schlagzähigkeitsklasse sind keine weiteren Modelle.",
+    hMethod: "Wie das Modell gebaut wurde",
+    pMethod: "Die Duktilität war schon gemessen. Sechs Modelle haben sie aus Chemie, Härte und Biegekraft gelernt.",
     factKindLabel: "Art des Lernens",
     factKind: "Überwacht",
     factModelLabel: "Auf dieser Seite",
@@ -273,28 +291,46 @@ const COPY = {
     factInverse: "Eine Suche",
     deckPrev: "Zurück",
     deckNext: "Weiter",
+    proc1t: "Die Zeilen",
+    proc1p: "385.000 Achsen. Jede Zeile trägt bereits Duktilität und Sprödigkeit.",
+    proc2t: "Die Eingaben",
+    proc2p: "Chemie, Härte, Biegekraft, die Gießform und der Durchmesser.",
+    proc3t: "Die Aufteilung",
+    proc3p: "Seed 42. 308.000 Zeilen trainieren, 77.000 bewerten. Danach werden die Eingaben skaliert.",
+    nTrain: "308.000",
+    nTest: "77.000",
+    proc4t: "Die Modelle",
+    proc4p: "Linear, Ridge, Random Forest, XGBoost, LightGBM und ein Stack der Baummodelle.",
     s1k: "01 · Die Zahl",
-    s1h: "Etwa 90 % der Streuung",
-    s1p: "Beide Ziele liegen bei etwa 90 %, und kein Modell erreicht die gestrichelte Linie bei 95 %.",
+    s1h: "Die Zahl",
+    s1p: "Beide Ziele liegen bei etwa 90 %. Keines erreicht 95 %.",
     legDuct: "Duktilität",
     legBrit: "Sprödigkeit",
     legTrain: "Training",
     legTest: "Test",
     s2k: "02 · Der Fehler",
-    s2h: "Wie weit die Vorhersage liegt",
-    s2p: "Niedriger ist besser. Linear und Ridge haben den kleinsten Fehler, bei 1,99.",
+    s2h: "Der Fehler",
+    s2p: "Niedriger ist besser. Linear und Ridge sind die kleinsten, bei 1,99.",
     s3k: "03 · Überanpassung",
-    s3h: "Training gegen den Test",
-    s3p: "Random Forest trainiert bei 95 % und testet bei 90 %. Ridge bleibt auf einer Höhe.",
+    s3h: "Training und Test",
+    s3p: "Random Forest steigt im Training und fällt im Test. Ridge bleibt auf einer Höhe.",
     s4k: "04 · Der Abstand",
     s4h: "Training minus Test",
     s4p: "Ein Balken über null heißt, das Modell hat sich die Trainingszeilen gemerkt. Das ist Random Forest.",
     s5k: "05 · Komplexität",
-    s5h: "Eine Gerade reicht an den Stack heran",
-    s5p: "Von der Geraden links bis zum Stack rechts bleibt der Test bei 90 %.",
+    s5h: "Einfach und komplex",
+    s5p: "Die Gerade trifft denselben Testwert wie der Stack.",
     s6k: "06 · Der Fehlbetrag",
     s6h: "Der Fehler in Duktilitätspunkten",
     s6p: "Der typische Fehler des gewählten Ridge-Modells beträgt 1,59 Duktilitätspunkte.",
+    keptT: "Was behalten wurde",
+    keptDuctLabel: "Duktilität",
+    keptDuct: "Ridge · 90,02 %",
+    keptBritLabel: "Sprödigkeit",
+    keptBrit: "Linear · 90,02 %",
+    keptMissLabel: "Typischer Fehler",
+    keptMiss: "± 1,59",
+    keptP: "Ridge ist das Duktilitätsmodell. Linear ist das Sprödigkeitsmodell. Der Fehler beträgt 1,59 Punkte.",
     step1t: "Die Tabelle",
     step1p: "385.000 Achsenprüfungen. 4Cr13 stellt 359.178 Zeilen, X46CrS13 25.822. Jede Zeile trägt eine mittlere HV10, eine Biegekraft, eine Duktilität und das Anlassen, geschrieben als Series Tempering und Additional Tempering.",
     step2t: "Das Anlassen, wie es geschrieben wurde",
@@ -1252,17 +1288,6 @@ function renderMethod() {
   mount("c-mae", chartMae());
 }
 
-let slideIndex = 0;
-
-function showSlide(index) {
-  const slides = [...document.querySelectorAll("#deck .slide")];
-  if (!slides.length) return;
-  slideIndex = (index + slides.length) % slides.length;
-  slides.forEach((slide, i) => { slide.hidden = i !== slideIndex; });
-  const count = document.getElementById("slide-count");
-  if (count) count.textContent = `${slideIndex + 1} / ${slides.length}`;
-}
-
 function show(mode) {
   document.querySelectorAll(".mode").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.mode === mode);
@@ -1317,21 +1342,6 @@ function init() {
     });
   });
   renderMethod();
-  showSlide(0);
-  document.getElementById("slide-prev").addEventListener("click", () => {
-    showSlide(slideIndex - 1);
-    document.getElementById("deck").scrollIntoView({ block: "start" });
-  });
-  document.getElementById("slide-next").addEventListener("click", () => {
-    showSlide(slideIndex + 1);
-    document.getElementById("deck").scrollIntoView({ block: "start" });
-  });
-  document.addEventListener("keydown", (event) => {
-    if (document.getElementById("panel-method").hidden) return;
-    if (event.target.closest("input, textarea, select")) return;
-    if (event.key === "ArrowRight") { event.preventDefault(); showSlide(slideIndex + 1); }
-    if (event.key === "ArrowLeft") { event.preventDefault(); showSlide(slideIndex - 1); }
-  });
   renderMeasure();
   renderTarget();
 }
