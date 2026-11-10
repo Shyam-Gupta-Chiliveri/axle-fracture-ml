@@ -1,0 +1,19 @@
+seed: 42
+data_path: data/fixtures/ci_axle.csv
+test_size: 0.2
+val_size: 0.2
+models:
+  - linear
+  - ridge
+  - lasso
+feature_sets:
+  - chemistry
+  - hardness
+  - full
+serve_feature_set: hardness
+leakage_correlation: 0.9
+require_complement: true
+require_leakage_feature: "Avg Bending Force (N)"
+metric_gate:
+  feature_set: hardness
+  min_holdout_r2: 0.7

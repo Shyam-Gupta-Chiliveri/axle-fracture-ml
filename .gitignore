@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.mypy_cache/
+mlruns/
+runs/
+reports/
+models/*.joblib
+models/manifest.json
+data/raw/*.csv
+.DS_Store
