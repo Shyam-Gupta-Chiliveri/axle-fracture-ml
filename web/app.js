@@ -97,7 +97,7 @@ const COPY = {
     proc4p: "Linear, Ridge, Random Forest, XGBoost, LightGBM, and a stack of the tree models.",
     s1k: "01 · The score",
     s1h: "The score",
-    s1p: "The first bar is training, the second is the test. Linear trains at 89.96% and tests at 90.02%. Ridge is the same pair.",
+    s1p: "Green is training, navy is the test. A short link means the two scores stay level. Linear and Ridge are that pair, 89.96% and 90.02%.",
     legDuct: "Ductility",
     legBrit: "Brittleness",
     legTrain: "Training",
@@ -118,10 +118,12 @@ const COPY = {
     featP: "Five inputs were added. Carbon over manganese, the hardness range, the force range, the alloy total, and hardness times force.",
     tuneT: "Hyperparameter tuning",
     tuneP: "Only XGBoost and LightGBM were tuned: 500 trees, depth 8, and a learning rate of 0.05.",
-    tuneN: "The first bar is training, the second is the test. XGBoost's test moves from 89.8683% to 89.91%. LightGBM's test moves from 90.0093% to 89.98%.",
+    tuneBefore: "Before",
+    tuneAfter: "After",
+    tuneN: "Each line runs from the first training to the tuned one. XGBoost's test moves from 89.8683% to 89.91%. LightGBM's test moves from 90.0093% to 89.98%.",
     advT: "Advanced optimization",
     advHow: "XGBoost, LightGBM, and Random Forest were stacked, and Ridge blended their predictions with 3-fold cross-validation.",
-    advP: "Ductility first, then brittleness. The first bar is training, the second is the test.",
+    advP: "Ductility first, then brittleness. Training runs to the right, the test runs upward. The dashed line is where the two scores match. Linear and Ridge sit on it.",
     advDuct: "Ductility",
     advDuctN: "Linear and Ridge test at 90.0235%. XGBoost tests at 89.8683%, and after tuning at 89.91%. LightGBM tests at 90.0093%, and after tuning at 89.98%. The stack tests at 89.9969%.",
     advBrit: "Brittleness",
@@ -315,7 +317,7 @@ const COPY = {
     proc4p: "Linear, Ridge, Random Forest, XGBoost, LightGBM und ein Stack der Baummodelle.",
     s1k: "01 · Die Zahl",
     s1h: "Die Zahl",
-    s1p: "Der erste Balken ist das Training, der zweite der Test. Linear trainiert bei 89,96 % und testet bei 90,02 %. Ridge ist dasselbe Paar.",
+    s1p: "Grün ist das Training, marineblau der Test. Eine kurze Verbindung heißt, die beiden Zahlen bleiben auf einer Höhe. Linear und Ridge sind dieses Paar, 89,96 % und 90,02 %.",
     legDuct: "Duktilität",
     legBrit: "Sprödigkeit",
     legTrain: "Training",
@@ -336,10 +338,12 @@ const COPY = {
     featP: "Fünf Eingaben kamen dazu. Kohlenstoff durch Mangan, die Härtespanne, die Kraftspanne, die Legierungssumme und Härte mal Kraft.",
     tuneT: "Hyperparameter-Tuning",
     tuneP: "Getunt wurden nur XGBoost und LightGBM: 500 Bäume, Tiefe 8 und eine Lernrate von 0,05.",
-    tuneN: "Der erste Balken ist das Training, der zweite der Test. Der Test von XGBoost geht von 89,8683 % auf 89,91 %. LightGBM geht von 90,0093 % auf 89,98 %.",
+    tuneBefore: "Vorher",
+    tuneAfter: "Nachher",
+    tuneN: "Jede Linie läuft vom ersten Lauf zum abgestimmten. Der Test von XGBoost geht von 89,8683 % auf 89,91 %. LightGBM geht von 90,0093 % auf 89,98 %.",
     advT: "Erweiterte Optimierung",
     advHow: "XGBoost, LightGBM und Random Forest wurden gestapelt, und Ridge mischte ihre Vorhersagen mit 3-facher Kreuzvalidierung.",
-    advP: "Zuerst Duktilität, dann Sprödigkeit. Der erste Balken ist das Training, der zweite der Test.",
+    advP: "Zuerst Duktilität, dann Sprödigkeit. Das Training läuft nach rechts, der Test nach oben. Die gestrichelte Linie ist, wo beide Zahlen gleich sind. Linear und Ridge sitzen darauf.",
     advDuct: "Duktilität",
     advDuctN: "Linear und Ridge testen bei 90,0235 %. XGBoost testet bei 89,8683 %, nach dem Tuning bei 89,91 %. LightGBM testet bei 90,0093 %, nach dem Tuning bei 89,98 %. Der Stack testet bei 89,9969 %.",
     advBrit: "Sprödigkeit",
@@ -1202,7 +1206,9 @@ function vizLegend(items) {
     const x = 52 + index * 124;
     const swatch = item.line
       ? `<line x1="${x}" x2="${x + 16}" y1="14" y2="14" stroke="${item.color}" stroke-width="2"/>`
-      : `<rect x="${x}" y="8" width="12" height="10" fill="${item.color}"/>`;
+      : item.dot
+        ? `<circle cx="${x + 6}" cy="13" r="5" fill="${item.color}"/>`
+        : `<rect x="${x}" y="8" width="12" height="10" fill="${item.color}"/>`;
     return `${swatch}<text x="${x + 22}" y="17" fill="var(--muted)" font-size="12">${item.label}</text>`;
   }).join("");
 }
@@ -1214,23 +1220,46 @@ function vizBar(cx, yValue, yBase, width, color) {
 }
 
 function chartScore() {
-  const ymin = 0;
-  const ymax = 118;
-  const frame = vizFrame(ymin, ymax);
-  const percent = (value) => value * 100;
-  const bars = FIT.map((row, index) => {
-    const label = `<text x="${frame.x(index).toFixed(1)}" y="48" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(percent(row.train), 2)} / ${formatNumber(percent(row.test), 2)}</text>`;
-    return vizBar(frame.x(index) - 9, frame.y(percent(row.train)), frame.y(0), 16, "var(--duct)") +
-      vizBar(frame.x(index) + 9, frame.y(percent(row.test)), frame.y(0), 16, "var(--blue)") +
-      label;
+  const W = 720;
+  const H = 320;
+  const L = 86;
+  const R = 132;
+  const T = 36;
+  const B = 28;
+  const xmin = 89.4;
+  const xmax = 95.4;
+  const plotW = W - L - R;
+  const rowH = (H - T - B) / FIT.length;
+  const x = (value) => L + ((value - xmin) / (xmax - xmin)) * plotW;
+  const y = (index) => T + rowH * index + rowH / 2;
+  const ticks = [90, 92, 94].map((tick) => {
+    const xx = x(tick);
+    return `<line x1="${xx.toFixed(1)}" x2="${xx.toFixed(1)}" y1="${T}" y2="${H - B}" stroke="var(--chart-grid)"/>
+      <text x="${xx.toFixed(1)}" y="${H - 8}" text-anchor="middle" fill="var(--muted)" font-size="11">${formatNumber(tick, 0)}</text>`;
   }).join("");
-  const y100 = frame.y(100);
-  const mark = `<line x1="${frame.L}" x2="${frame.L + frame.plotW}" y1="${y100.toFixed(1)}" y2="${y100.toFixed(1)}" stroke="var(--dash)" stroke-dasharray="4 4"/>`;
+  const rows = FIT.map((row, index) => {
+    const train = row.train * 100;
+    const test = row.test * 100;
+    const yy = y(index);
+    const x1 = x(train);
+    const x2 = x(test);
+    const close = Math.abs(x1 - x2) < 18;
+    const yTrain = close ? yy - 6 : yy;
+    const yTest = close ? yy + 6 : yy;
+    const win = row.name === "Linear" || row.name === "Ridge";
+    const name = `<text x="8" y="${(yy + 4).toFixed(1)}" fill="${win ? "var(--ink)" : "var(--muted)"}" font-size="12" font-weight="${win ? 500 : 400}">${row.name}</text>`;
+    const link = `<line x1="${x1.toFixed(1)}" x2="${x2.toFixed(1)}" y1="${yTrain.toFixed(1)}" y2="${yTest.toFixed(1)}" stroke="var(--ink)" stroke-width="1.5"/>`;
+    const dots = `<circle cx="${x1.toFixed(1)}" cy="${yTrain.toFixed(1)}" r="6" fill="var(--duct)"/>
+      <circle cx="${x2.toFixed(1)}" cy="${yTest.toFixed(1)}" r="6" fill="var(--blue)"/>`;
+    const scores = `<text x="${W - 8}" y="${(yy - 2).toFixed(1)}" text-anchor="end" fill="var(--duct)" font-size="11" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(train, 2)}</text>
+      <text x="${W - 8}" y="${(yy + 12).toFixed(1)}" text-anchor="end" fill="var(--blue)" font-size="11" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(test, 2)}</text>`;
+    return name + link + dots + scores;
+  }).join("");
   return vizSvg(
-    vizLegend([{ label: t("legTrain"), color: "var(--duct)" }, { label: t("legTest"), color: "var(--blue)" }]) +
-      vizAxis(frame, [0, 25, 50, 75, 100], 0) + bars + mark,
-    frame.W,
-    frame.H
+    vizLegend([{ label: t("legTrain"), color: "var(--duct)", dot: true }, { label: t("legTest"), color: "var(--blue)", dot: true }]) +
+      ticks + rows,
+    W,
+    H
   );
 }
 
@@ -1355,85 +1384,104 @@ const ADV_BRIT = [
 ];
 
 function chartTrainTest(rows) {
-  const ymin = 89.6;
-  const ymax = 92.6;
   const W = 720;
-  const H = 300;
+  const H = 340;
   const L = 58;
   const R = 16;
-  const T = 36;
-  const B = 36;
+  const T = 28;
+  const B = 32;
+  const xmin = 89.7;
+  const xmax = 92.0;
+  const ymin = 89.78;
+  const ymax = 90.16;
   const plotW = W - L - R;
   const plotH = H - T - B;
+  const x = (value) => L + ((value - xmin) / (xmax - xmin)) * plotW;
   const y = (value) => T + ((ymax - value) / (ymax - ymin)) * plotH;
-  const slot = plotW / rows.length;
-  const x = (index) => L + slot * index + slot / 2;
-  const ticks = [90, 91, 92].map((tick) => {
+  const xticks = [90, 91, 92].map((tick) => {
+    const xx = x(tick);
+    return `<line x1="${xx.toFixed(1)}" x2="${xx.toFixed(1)}" y1="${T}" y2="${T + plotH}" stroke="var(--chart-grid)"/>
+      <text x="${xx.toFixed(1)}" y="${H - 10}" text-anchor="middle" fill="var(--muted)" font-size="11">${formatNumber(tick, 0)}</text>`;
+  }).join("");
+  const yticks = [89.8, 89.9, 90, 90.1].map((tick) => {
     const yy = y(tick);
     return `<line x1="${L}" x2="${L + plotW}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}" stroke="var(--chart-grid)"/>
-      <text x="${L - 8}" y="${(yy + 4).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">${formatNumber(tick, 0)}</text>`;
+      <text x="${L - 8}" y="${(yy + 4).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">${formatNumber(tick, 1)}</text>`;
   }).join("");
-  const names = rows.map((row, index) => {
-    const win = row.name === "Linear" || row.name === "Ridge";
-    return `<text x="${x(index).toFixed(1)}" y="${H - 12}" text-anchor="middle" fill="${win ? "var(--ink)" : "var(--muted)"}" font-size="12" font-weight="${win ? 500 : 400}">${row.name}</text>`;
-  }).join("");
-  const bars = rows.map((row, index) => {
+  const diag0 = Math.max(xmin, ymin);
+  const diag1 = Math.min(xmax, ymax);
+  const diagonal = `<line x1="${x(diag0).toFixed(1)}" y1="${y(diag0).toFixed(1)}" x2="${x(diag1).toFixed(1)}" y2="${y(diag1).toFixed(1)}" stroke="var(--dash)" stroke-dasharray="4 4" stroke-width="1.5"/>`;
+  const shift = {
+    Linear: [-46, -18],
+    Ridge: [10, -18],
+    XGB: [10, 16],
+    "XGB tuned": [-62, -16],
+    LGB: [10, 16],
+    "LGB tuned": [10, -16],
+    Stack: [10, -16],
+  };
+  const dots = rows.map((row) => {
     const train = row.train * 100;
     const test = row.test * 100;
-    const top = Math.min(y(train), y(test));
+    const cx = x(train);
+    const cy = y(test);
+    const win = row.name === "Linear" || row.name === "Ridge";
+    const [dx, dy] = shift[row.name] || [10, -16];
     const digits = row.testDigits || 4;
-    const label = `<text x="${x(index).toFixed(1)}" y="${(top - 22).toFixed(1)}" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(train, 2)}</text>
-      <text x="${x(index).toFixed(1)}" y="${(top - 10).toFixed(1)}" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(test, digits)}</text>`;
-    return vizBar(x(index) - 9, y(train), y(ymin), 14, "var(--duct)") +
-      vizBar(x(index) + 9, y(test), y(ymin), 14, "var(--blue)") +
-      label;
+    return `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${win ? 7 : 6}" fill="${win ? "var(--blue)" : "var(--duct)"}" fill-opacity="0.9" stroke="var(--ink)" stroke-width="1.25"/>
+      <text x="${(cx + dx).toFixed(1)}" y="${(cy + dy).toFixed(1)}" fill="${win ? "var(--ink)" : "var(--muted)"}" font-size="12" font-weight="${win ? 500 : 400}">${row.name}</text>
+      <text x="${(cx + dx).toFixed(1)}" y="${(cy + dy + 13).toFixed(1)}" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(test, digits)}</text>`;
   }).join("");
-  return vizSvg(
-    vizLegend([{ label: t("legTrain"), color: "var(--duct)" }, { label: t("legTest"), color: "var(--blue)" }]) +
-      ticks + names + bars,
-    W,
-    H
-  );
+  return vizSvg(xticks + yticks + diagonal + dots, W, H);
 }
 
 function chartPairs(rows) {
-  const ymin = 0;
-  const ymax = 118;
+  const families = [
+    { title: "XGBoost", before: rows[0], after: rows[1] },
+    { title: "LightGBM", before: rows[2], after: rows[3] },
+  ];
   const W = 720;
-  const H = 300;
-  const L = 52;
-  const R = 16;
-  const T = 36;
-  const B = 36;
-  const plotW = W - L - R;
+  const H = 320;
+  const ymin = 89.55;
+  const ymax = 92.05;
+  const T = 52;
+  const B = 16;
   const plotH = H - T - B;
-  const y = (value) => T + ((ymax - value) / (ymax - ymin)) * plotH;
-  const slot = plotW / rows.length;
-  const x = (index) => L + slot * index + slot / 2;
-  const percent = (value) => value * 100;
-  const ticks = [0, 25, 50, 75, 100].map((tick) => {
-    const yy = y(tick);
-    return `<line x1="${L}" x2="${L + plotW}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}" stroke="var(--chart-grid)"/>
-      <text x="${L - 8}" y="${(yy + 4).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">${formatNumber(tick, 0)}</text>`;
+  const yOf = (value) => T + ((ymax - value * 100) / (ymax - ymin)) * plotH;
+  const panelW = 330;
+  const panels = families.map((family, index) => {
+    const origin = 28 + index * (panelW + 16);
+    const x0 = origin + 78;
+    const x1 = origin + panelW - 78;
+    const ends = [
+      { key: "train", color: "var(--duct)" },
+      { key: "test", color: "var(--blue)" },
+    ].map((item) => ({
+      ...item,
+      y0: yOf(family.before[item.key]),
+      y1: yOf(family.after[item.key]),
+      leftDigits: item.key === "test" ? (family.before.testDigits || 4) : 2,
+      rightDigits: item.key === "test" ? (family.after.testDigits || 4) : 2,
+      left: family.before[item.key] * 100,
+      right: family.after[item.key] * 100,
+    }));
+    const labelY = (value, other) => (Math.abs(value - other) < 18 ? (value < other ? value - 8 : value + 14) : value + 4);
+    const title = `<text x="${((x0 + x1) / 2).toFixed(1)}" y="34" text-anchor="middle" fill="var(--ink)" font-size="14" font-weight="500">${family.title}</text>`;
+    const heads = `<text x="${x0}" y="48" text-anchor="middle" fill="var(--muted)" font-size="11">${t("tuneBefore")}</text>
+      <text x="${x1}" y="48" text-anchor="middle" fill="var(--muted)" font-size="11">${t("tuneAfter")}</text>`;
+    const lines = ends.map((item) => {
+      const other0 = ends.find((end) => end !== item).y0;
+      const other1 = ends.find((end) => end !== item).y1;
+      return `<line x1="${x0}" y1="${item.y0.toFixed(1)}" x2="${x1}" y2="${item.y1.toFixed(1)}" stroke="${item.color}" stroke-width="2"/>
+        <circle cx="${x0}" cy="${item.y0.toFixed(1)}" r="5" fill="${item.color}"/>
+        <circle cx="${x1}" cy="${item.y1.toFixed(1)}" r="5" fill="${item.color}"/>
+        <text x="${x0 - 12}" y="${labelY(item.y0, other0).toFixed(1)}" text-anchor="end" fill="${item.color}" font-size="11" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(item.left, item.leftDigits)}</text>
+        <text x="${x1 + 12}" y="${labelY(item.y1, other1).toFixed(1)}" text-anchor="start" fill="${item.color}" font-size="11" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(item.right, item.rightDigits)}</text>`;
+    }).join("");
+    return title + heads + lines;
   }).join("");
-  const names = rows.map((row, index) => {
-    const label = row.key ? t(row.key) : row.name;
-    const tuned = row.name.includes("tuned");
-    return `<text x="${x(index).toFixed(1)}" y="${H - 12}" text-anchor="middle" fill="${tuned ? "var(--ink)" : "var(--muted)"}" font-size="11" font-weight="${tuned ? 500 : 400}">${label}</text>`;
-  }).join("");
-  const bars = rows.map((row, index) => {
-    const digits = row.testDigits || 4;
-    const label = `<text x="${x(index).toFixed(1)}" y="44" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(percent(row.train), 2)}</text>
-      <text x="${x(index).toFixed(1)}" y="56" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(percent(row.test), digits)}</text>`;
-    return vizBar(x(index) - 8, y(percent(row.train)), y(0), 12, "var(--duct)") +
-      vizBar(x(index) + 8, y(percent(row.test)), y(0), 12, "var(--blue)") +
-      label;
-  }).join("");
-  const y100 = y(100);
-  const mark = `<line x1="${L}" x2="${L + plotW}" y1="${y100.toFixed(1)}" y2="${y100.toFixed(1)}" stroke="var(--dash)" stroke-dasharray="4 4"/>`;
   return vizSvg(
-    vizLegend([{ label: t("legTrain"), color: "var(--duct)" }, { label: t("legTest"), color: "var(--blue)" }]) +
-      ticks + names + bars + mark,
+    vizLegend([{ label: t("legTrain"), color: "var(--duct)", line: true }, { label: t("legTest"), color: "var(--blue)", line: true }]) + panels,
     W,
     H
   );

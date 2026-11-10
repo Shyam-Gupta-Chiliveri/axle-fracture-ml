@@ -209,7 +209,7 @@
         <li>
           <h2 data-i18n="s1h">The score</h2>
           <div id="c-r2" class="viz"></div>
-          <p class="viz-note" data-i18n="s1p">The first bar is training, the second is the test. Linear trains at 89.96% and tests at 90.02%. Ridge is the same pair.</p>
+          <p class="viz-note" data-i18n="s1p">Green is training, navy is the test. A short link means the two scores stay level. Linear and Ridge are that pair, 89.96% and 90.02%.</p>
         </li>
         <li>
           <h2 data-i18n="featT">Feature engineering</h2>
@@ -219,12 +219,12 @@
           <h2 data-i18n="tuneT">Hyperparameter tuning</h2>
           <p data-i18n="tuneP">Only XGBoost and LightGBM were tuned: 500 trees, depth 8, and a learning rate of 0.05.</p>
           <div id="c-tune" class="viz"></div>
-          <p class="viz-note" data-i18n="tuneN">The first bar is training, the second is the test. XGBoost's test moves from 89.8683% to 89.91%. LightGBM's test moves from 90.0093% to 89.98%.</p>
+          <p class="viz-note" data-i18n="tuneN">Each line runs from the first training to the tuned one. XGBoost's test moves from 89.8683% to 89.91%. LightGBM's test moves from 90.0093% to 89.98%.</p>
         </li>
         <li>
           <h2 data-i18n="advT">Advanced optimization</h2>
           <p data-i18n="advHow">XGBoost, LightGBM, and Random Forest were stacked, and Ridge blended their predictions with 3-fold cross-validation.</p>
-          <p data-i18n="advP">Ductility first, then brittleness. The first bar is training, the second is the test.</p>
+          <p data-i18n="advP">Ductility first, then brittleness. Training runs to the right, the test runs upward. The dashed line is where the two scores match. Linear and Ridge sit on it.</p>
           <h3 data-i18n="advDuct">Ductility</h3>
           <div id="c-adv-duct" class="viz"></div>
           <p class="viz-note" data-i18n="advDuctN">Linear and Ridge test at 90.0235%. XGBoost tests at 89.8683%, and after tuning at 89.91%. LightGBM tests at 90.0093%, and after tuning at 89.98%. The stack tests at 89.9969%.</p>
@@ -261,6 +261,6 @@
 
   <script src="vendor/xlsx.full.min.js"></script>
   <script src="model.js?v=16"></script>
-  <script src="app.js?v=42"></script>
+  <script src="app.js?v=44"></script>
 </body>
 </html>
