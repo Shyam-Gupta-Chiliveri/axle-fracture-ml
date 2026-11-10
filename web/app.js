@@ -123,9 +123,9 @@ const COPY = {
     advHow: "XGBoost, LightGBM, and Random Forest were stacked, and Ridge blended their predictions with 3-fold cross-validation.",
     advP: "Ductility first, then brittleness. The first bar is training, the second is the test.",
     advDuct: "Ductility",
-    advDuctN: "Linear and Ridge train at 89.96% and test at 90.0235%. The stack trains at 90.62% and tests at 89.9969%.",
+    advDuctN: "Linear and Ridge test at 90.0235%. XGBoost tests at 89.8683%, and after tuning at 89.91%. LightGBM tests at 90.0093%, and after tuning at 89.98%. The stack tests at 89.9969%.",
     advBrit: "Brittleness",
-    advBritN: "Linear trains at 89.96% and tests at 90.0235%. The stack trains at 90.61% and tests at 89.9968%. Ridge matches Linear, because brittleness is 100 minus ductility.",
+    advBritN: "Linear tests at 90.0235%. XGBoost tests at 89.8456%. LightGBM tests at 90.0047%. The stack tests at 89.9968%. Tuning was run for ductility only. Ridge matches Linear, because brittleness is 100 minus ductility.",
     s6k: "06 · The miss",
     s6h: "The error in ductility points",
     s6p: "The typical miss for the chosen Ridge model is 1.59 ductility points.",
@@ -341,9 +341,9 @@ const COPY = {
     advHow: "XGBoost, LightGBM und Random Forest wurden gestapelt, und Ridge mischte ihre Vorhersagen mit 3-facher Kreuzvalidierung.",
     advP: "Zuerst Duktilität, dann Sprödigkeit. Der erste Balken ist das Training, der zweite der Test.",
     advDuct: "Duktilität",
-    advDuctN: "Linear und Ridge trainieren bei 89,96 % und testen bei 90,0235 %. Der Stack trainiert bei 90,62 % und testet bei 89,9969 %.",
+    advDuctN: "Linear und Ridge testen bei 90,0235 %. XGBoost testet bei 89,8683 %, nach dem Tuning bei 89,91 %. LightGBM testet bei 90,0093 %, nach dem Tuning bei 89,98 %. Der Stack testet bei 89,9969 %.",
     advBrit: "Sprödigkeit",
-    advBritN: "Linear trainiert bei 89,96 % und testet bei 90,0235 %. Der Stack trainiert bei 90,61 % und testet bei 89,9968 %. Ridge entspricht Linear, weil Sprödigkeit 100 minus Duktilität ist.",
+    advBritN: "Linear testet bei 90,0235 %. XGBoost testet bei 89,8456 %. LightGBM testet bei 90,0047 %. Der Stack testet bei 89,9968 %. Das Tuning lief nur für die Duktilität. Ridge entspricht Linear, weil Sprödigkeit 100 minus Duktilität ist.",
     s6k: "06 · Der Fehlbetrag",
     s6h: "Der Fehler in Duktilitätspunkten",
     s6p: "Der typische Fehler des gewählten Ridge-Modells beträgt 1,59 Duktilitätspunkte.",
@@ -1339,22 +1339,28 @@ const TUNE = [
 const ADV_DUCT = [
   { name: "Linear", train: 0.8996, test: 0.900235 },
   { name: "Ridge", train: 0.8996, test: 0.900235 },
+  { name: "XGB", train: 0.9160, test: 0.898683 },
+  { name: "XGB tuned", train: 0.9143, test: 0.8991, testDigits: 2 },
+  { name: "LGB", train: 0.9006, test: 0.900093 },
+  { name: "LGB tuned", train: 0.9041, test: 0.8998, testDigits: 2 },
   { name: "Stack", train: 0.9062, test: 0.899969 },
 ];
 
 const ADV_BRIT = [
   { name: "Linear", train: 0.8996, test: 0.900235 },
   { name: "Ridge", train: 0.8996, test: 0.900235 },
+  { name: "XGB", train: 0.9166, test: 0.898456 },
+  { name: "LGB", train: 0.9007, test: 0.900047 },
   { name: "Stack", train: 0.9061, test: 0.899968 },
 ];
 
 function chartTrainTest(rows) {
-  const ymin = 89.7;
-  const ymax = 90.8;
+  const ymin = 89.6;
+  const ymax = 92.6;
   const W = 720;
   const H = 300;
   const L = 58;
-  const R = 20;
+  const R = 16;
   const T = 36;
   const B = 36;
   const plotW = W - L - R;
@@ -1362,22 +1368,24 @@ function chartTrainTest(rows) {
   const y = (value) => T + ((ymax - value) / (ymax - ymin)) * plotH;
   const slot = plotW / rows.length;
   const x = (index) => L + slot * index + slot / 2;
-  const ticks = [89.8, 90, 90.2, 90.4, 90.6, 90.8].map((tick) => {
+  const ticks = [90, 91, 92].map((tick) => {
     const yy = y(tick);
     return `<line x1="${L}" x2="${L + plotW}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}" stroke="var(--chart-grid)"/>
-      <text x="${L - 8}" y="${(yy + 4).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">${formatNumber(tick, 1)}</text>`;
+      <text x="${L - 8}" y="${(yy + 4).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">${formatNumber(tick, 0)}</text>`;
   }).join("");
   const names = rows.map((row, index) => {
-    const win = row.name !== "Stack";
+    const win = row.name === "Linear" || row.name === "Ridge";
     return `<text x="${x(index).toFixed(1)}" y="${H - 12}" text-anchor="middle" fill="${win ? "var(--ink)" : "var(--muted)"}" font-size="12" font-weight="${win ? 500 : 400}">${row.name}</text>`;
   }).join("");
   const bars = rows.map((row, index) => {
     const train = row.train * 100;
     const test = row.test * 100;
     const top = Math.min(y(train), y(test));
-    const label = `<text x="${x(index).toFixed(1)}" y="${(top - 10).toFixed(1)}" text-anchor="middle" fill="var(--ink)" font-size="11" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(train, 2)} / ${formatNumber(test, 4)}</text>`;
-    return vizBar(x(index) - 12, y(train), y(ymin), 20, "var(--duct)") +
-      vizBar(x(index) + 12, y(test), y(ymin), 20, "var(--blue)") +
+    const digits = row.testDigits || 4;
+    const label = `<text x="${x(index).toFixed(1)}" y="${(top - 22).toFixed(1)}" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(train, 2)}</text>
+      <text x="${x(index).toFixed(1)}" y="${(top - 10).toFixed(1)}" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(test, digits)}</text>`;
+    return vizBar(x(index) - 9, y(train), y(ymin), 14, "var(--duct)") +
+      vizBar(x(index) + 9, y(test), y(ymin), 14, "var(--blue)") +
       label;
   }).join("");
   return vizSvg(

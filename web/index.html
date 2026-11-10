@@ -227,10 +227,10 @@
           <p data-i18n="advP">Ductility first, then brittleness. The first bar is training, the second is the test.</p>
           <h3 data-i18n="advDuct">Ductility</h3>
           <div id="c-adv-duct" class="viz"></div>
-          <p class="viz-note" data-i18n="advDuctN">Linear and Ridge train at 89.96% and test at 90.0235%. The stack trains at 90.62% and tests at 89.9969%.</p>
+          <p class="viz-note" data-i18n="advDuctN">Linear and Ridge test at 90.0235%. XGBoost tests at 89.8683%, and after tuning at 89.91%. LightGBM tests at 90.0093%, and after tuning at 89.98%. The stack tests at 89.9969%.</p>
           <h3 data-i18n="advBrit">Brittleness</h3>
           <div id="c-adv-brit" class="viz"></div>
-          <p class="viz-note" data-i18n="advBritN">Linear trains at 89.96% and tests at 90.0235%. The stack trains at 90.61% and tests at 89.9968%. Ridge matches Linear, because brittleness is 100 minus ductility.</p>
+          <p class="viz-note" data-i18n="advBritN">Linear tests at 90.0235%. XGBoost tests at 89.8456%. LightGBM tests at 90.0047%. The stack tests at 89.9968%. Tuning was run for ductility only. Ridge matches Linear, because brittleness is 100 minus ductility.</p>
         </li>
         <li>
           <h2 data-i18n="s3h">Training and the test</h2>
@@ -261,6 +261,6 @@
 
   <script src="vendor/xlsx.full.min.js"></script>
   <script src="model.js?v=16"></script>
-  <script src="app.js?v=39"></script>
+  <script src="app.js?v=40"></script>
 </body>
 </html>
