@@ -212,23 +212,12 @@
           <p class="viz-note" data-i18n="s1p">The first bar is training, the second is the test. Linear trains at 89.96% and tests at 90.02%. Ridge is the same pair.</p>
         </li>
         <li>
-          <h2 data-i18n="s2h">The error</h2>
-          <div id="c-rmse" class="viz"></div>
-          <p class="viz-note" data-i18n="s2p">Lower is better. Linear and Ridge are the smallest, at 1.99.</p>
-        </li>
-        <li>
-          <h2 data-i18n="s3h">Training and the test</h2>
-          <div id="c-fit" class="viz"></div>
-          <p class="viz-note" data-i18n="s3p">Random Forest rises in training and falls on the test. Ridge stays level.</p>
-        </li>
-        <li>
-          <h2 data-i18n="s5h">Simple and complex</h2>
-          <div id="c-cx" class="viz"></div>
-          <p class="viz-note" data-i18n="s5p">The straight line scores the same test as the stack.</p>
+          <h2 data-i18n="featT">Feature engineering</h2>
+          <p data-i18n="featP">Five inputs were added. Carbon over manganese, the hardness range, the force range, the alloy total, and hardness times force.</p>
         </li>
         <li>
           <h2 data-i18n="tuneT">Hyperparameter tuning</h2>
-          <p data-i18n="tuneP">XGBoost and LightGBM were trained again, with five extra inputs, 500 trees, depth 8, and a learning rate of 0.05.</p>
+          <p data-i18n="tuneP">XGBoost and LightGBM were trained again: 500 trees, depth 8, and a learning rate of 0.05.</p>
           <div id="c-tune" class="viz"></div>
           <p class="viz-note" data-i18n="tuneN">The first bar is training, the second is the test. XGBoost's test moves from 89.87% to 89.91%. LightGBM's test moves from 90.01% to 89.98%.</p>
         </li>
@@ -237,6 +226,21 @@
           <p data-i18n="advP">Those trees are stacked. Ridge combines them, checked in three folds. Brittleness gets the same stack.</p>
           <div id="c-adv" class="viz"></div>
           <p class="viz-note" data-i18n="advN">The stacked test stays at 90.00%. Linear and Ridge stay at 90.02%.</p>
+        </li>
+        <li>
+          <h2 data-i18n="s3h">Training and the test</h2>
+          <div id="c-fit" class="viz"></div>
+          <p class="viz-note" data-i18n="s3p">Random Forest trains higher than it tests. That is overfitting. Ridge stays level.</p>
+        </li>
+        <li>
+          <h2 data-i18n="s2h">The error</h2>
+          <div id="c-rmse" class="viz"></div>
+          <p class="viz-note" data-i18n="s2p">Lower is better. Linear and Ridge are the smallest, at 1.99.</p>
+        </li>
+        <li>
+          <h2 data-i18n="s5h">Simple and complex</h2>
+          <div id="c-cx" class="viz"></div>
+          <p class="viz-note" data-i18n="s5p">The straight line scores the same test as the stack.</p>
         </li>
         <li>
           <h2 data-i18n="keptT">What was kept</h2>
@@ -257,6 +261,6 @@
 
   <script src="vendor/xlsx.full.min.js"></script>
   <script src="model.js?v=16"></script>
-  <script src="app.js?v=29"></script>
+  <script src="app.js?v=30"></script>
 </body>
 </html>
