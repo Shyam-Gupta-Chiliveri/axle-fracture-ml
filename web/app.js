@@ -1355,7 +1355,6 @@ function renderMethod() {
     if (host) host.innerHTML = html;
   };
   mount("c-r2", chartScore());
-  mount("c-rmse", chartRmse());
   mount("c-fit", chartFit());
   mount("c-gap", chartGap());
   mount("c-cx", chartComplex());
