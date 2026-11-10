@@ -1,5 +1,7 @@
 # Axle fracture ML
 
+[https://axle.138.2.179.154.sslip.io](https://axle.138.2.179.154.sslip.io)
+
 Property desk for the 385,000-row axle tests. Enter a hardness reading and the desk estimates ductility, brittleness, and bending force. Enter a target property and it returns a temper that was actually run, plus the hardness those axles had.
 
 Open `web/index.html` in a browser, or serve the `web` folder. The page is static: hardness in, properties out; a target property back to a recorded temper; an Excel or CSV upload analysed in the browser.
