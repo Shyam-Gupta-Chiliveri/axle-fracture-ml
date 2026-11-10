@@ -120,8 +120,11 @@ const COPY = {
     tuneP: "XGBoost and LightGBM were trained again: 500 trees, depth 8, and a learning rate of 0.05.",
     tuneN: "The first bar is training, the second is the test. XGBoost's test moves from 89.87% to 89.91%. LightGBM's test moves from 90.01% to 89.98%.",
     advT: "Advanced optimization",
-    advP: "The stack is set beside Linear and Ridge. The first bar is ductility, the second is brittleness.",
-    advN: "Linear and Ridge test at 90.0235% on both. The stack tests at 89.9969% ductility and 89.9968% brittleness.",
+    advP: "Ductility first, then brittleness. The first bar is training, the second is the test.",
+    advDuct: "Ductility",
+    advDuctN: "Linear and Ridge train at 89.96% and test at 90.0235%. The stack trains at 90.62% and tests at 89.9969%.",
+    advBrit: "Brittleness",
+    advBritN: "Linear trains at 89.96% and tests at 90.0235%. The stack trains at 90.61% and tests at 89.9968%. Ridge matches Linear, because brittleness is 100 minus ductility.",
     s6k: "06 · The miss",
     s6h: "The error in ductility points",
     s6p: "The typical miss for the chosen Ridge model is 1.59 ductility points.",
@@ -334,8 +337,11 @@ const COPY = {
     tuneP: "XGBoost und LightGBM wurden erneut trainiert: 500 Bäume, Tiefe 8 und eine Lernrate von 0,05.",
     tuneN: "Der erste Balken ist das Training, der zweite der Test. Der Test von XGBoost geht von 89,87 % auf 89,91 %. LightGBM geht von 90,01 % auf 89,98 %.",
     advT: "Erweiterte Optimierung",
-    advP: "Der Stack steht neben Linear und Ridge. Der erste Balken ist Duktilität, der zweite Sprödigkeit.",
-    advN: "Linear und Ridge testen auf beiden bei 90,0235 %. Der Stack testet bei 89,9969 % Duktilität und 89,9968 % Sprödigkeit.",
+    advP: "Zuerst Duktilität, dann Sprödigkeit. Der erste Balken ist das Training, der zweite der Test.",
+    advDuct: "Duktilität",
+    advDuctN: "Linear und Ridge trainieren bei 89,96 % und testen bei 90,0235 %. Der Stack trainiert bei 90,62 % und testet bei 89,9969 %.",
+    advBrit: "Sprödigkeit",
+    advBritN: "Linear trainiert bei 89,96 % und testet bei 90,0235 %. Der Stack trainiert bei 90,61 % und testet bei 89,9968 %. Ridge entspricht Linear, weil Sprödigkeit 100 minus Duktilität ist.",
     s6k: "06 · Der Fehlbetrag",
     s6h: "Der Fehler in Duktilitätspunkten",
     s6p: "Der typische Fehler des gewählten Ridge-Modells beträgt 1,59 Duktilitätspunkte.",
@@ -1328,15 +1334,21 @@ const TUNE = [
   { name: "LGB tuned", train: 0.9041, test: 0.8998 },
 ];
 
-const ADV = [
-  { name: "Linear", duct: 0.900235, brit: 0.900235 },
-  { name: "Ridge", duct: 0.900235, brit: 0.900235 },
-  { name: "Stack", duct: 0.899969, brit: 0.899968 },
+const ADV_DUCT = [
+  { name: "Linear", train: 0.8996, test: 0.900235 },
+  { name: "Ridge", train: 0.8996, test: 0.900235 },
+  { name: "Stack", train: 0.9062, test: 0.899969 },
 ];
 
-function chartAdvance() {
-  const ymin = 89.985;
-  const ymax = 90.035;
+const ADV_BRIT = [
+  { name: "Linear", train: 0.8996, test: 0.900235 },
+  { name: "Ridge", train: 0.8996, test: 0.900235 },
+  { name: "Stack", train: 0.9061, test: 0.899968 },
+];
+
+function chartTrainTest(rows) {
+  const ymin = 89.7;
+  const ymax = 90.8;
   const W = 720;
   const H = 300;
   const L = 58;
@@ -1346,26 +1358,28 @@ function chartAdvance() {
   const plotW = W - L - R;
   const plotH = H - T - B;
   const y = (value) => T + ((ymax - value) / (ymax - ymin)) * plotH;
-  const slot = plotW / ADV.length;
+  const slot = plotW / rows.length;
   const x = (index) => L + slot * index + slot / 2;
-  const ticks = [89.99, 90, 90.01, 90.02, 90.03].map((tick) => {
+  const ticks = [89.8, 90, 90.2, 90.4, 90.6, 90.8].map((tick) => {
     const yy = y(tick);
     return `<line x1="${L}" x2="${L + plotW}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}" stroke="var(--chart-grid)"/>
-      <text x="${L - 8}" y="${(yy + 4).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">${formatNumber(tick, 2)}</text>`;
+      <text x="${L - 8}" y="${(yy + 4).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">${formatNumber(tick, 1)}</text>`;
   }).join("");
-  const names = ADV.map((row, index) => {
+  const names = rows.map((row, index) => {
     const win = row.name !== "Stack";
     return `<text x="${x(index).toFixed(1)}" y="${H - 12}" text-anchor="middle" fill="${win ? "var(--ink)" : "var(--muted)"}" font-size="12" font-weight="${win ? 500 : 400}">${row.name}</text>`;
   }).join("");
-  const bars = ADV.map((row, index) => {
-    const top = Math.min(y(row.duct * 100), y(row.brit * 100));
-    const label = `<text x="${x(index).toFixed(1)}" y="${(top - 10).toFixed(1)}" text-anchor="middle" fill="var(--ink)" font-size="11" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(row.duct * 100, 4)} / ${formatNumber(row.brit * 100, 4)}</text>`;
-    return vizBar(x(index) - 12, y(row.duct * 100), y(ymin), 20, "var(--blue)") +
-      vizBar(x(index) + 12, y(row.brit * 100), y(ymin), 20, "var(--force)") +
+  const bars = rows.map((row, index) => {
+    const train = row.train * 100;
+    const test = row.test * 100;
+    const top = Math.min(y(train), y(test));
+    const label = `<text x="${x(index).toFixed(1)}" y="${(top - 10).toFixed(1)}" text-anchor="middle" fill="var(--ink)" font-size="11" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(train, 2)} / ${formatNumber(test, 4)}</text>`;
+    return vizBar(x(index) - 12, y(train), y(ymin), 20, "var(--duct)") +
+      vizBar(x(index) + 12, y(test), y(ymin), 20, "var(--blue)") +
       label;
   }).join("");
   return vizSvg(
-    vizLegend([{ label: t("legDuct"), color: "var(--blue)" }, { label: t("legBrit"), color: "var(--force)" }]) +
+    vizLegend([{ label: t("legTrain"), color: "var(--duct)" }, { label: t("legTest"), color: "var(--blue)" }]) +
       ticks + names + bars,
     W,
     H
@@ -1424,7 +1438,8 @@ function renderMethod() {
   mount("c-cx", chartComplex());
   mount("c-mae", chartMae());
   mount("c-tune", chartPairs(TUNE));
-  mount("c-adv", chartAdvance());
+  mount("c-adv-duct", chartTrainTest(ADV_DUCT));
+  mount("c-adv-brit", chartTrainTest(ADV_BRIT));
 }
 
 function show(mode) {

@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=24">
+  <link rel="stylesheet" href="styles.css?v=25">
 </head>
 <body>
   <header class="top">
@@ -223,9 +223,13 @@
         </li>
         <li>
           <h2 data-i18n="advT">Advanced optimization</h2>
-          <p data-i18n="advP">The stack is set beside Linear and Ridge. The first bar is ductility, the second is brittleness.</p>
-          <div id="c-adv" class="viz"></div>
-          <p class="viz-note" data-i18n="advN">Linear and Ridge test at 90.0235% on both. The stack tests at 89.9969% ductility and 89.9968% brittleness.</p>
+          <p data-i18n="advP">Ductility first, then brittleness. The first bar is training, the second is the test.</p>
+          <h3 data-i18n="advDuct">Ductility</h3>
+          <div id="c-adv-duct" class="viz"></div>
+          <p class="viz-note" data-i18n="advDuctN">Linear and Ridge train at 89.96% and test at 90.0235%. The stack trains at 90.62% and tests at 89.9969%.</p>
+          <h3 data-i18n="advBrit">Brittleness</h3>
+          <div id="c-adv-brit" class="viz"></div>
+          <p class="viz-note" data-i18n="advBritN">Linear trains at 89.96% and tests at 90.0235%. The stack trains at 90.61% and tests at 89.9968%. Ridge matches Linear, because brittleness is 100 minus ductility.</p>
         </li>
         <li>
           <h2 data-i18n="s3h">Training and the test</h2>
@@ -256,6 +260,6 @@
 
   <script src="vendor/xlsx.full.min.js"></script>
   <script src="model.js?v=16"></script>
-  <script src="app.js?v=36"></script>
+  <script src="app.js?v=37"></script>
 </body>
 </html>
