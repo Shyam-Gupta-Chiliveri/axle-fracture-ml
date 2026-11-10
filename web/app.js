@@ -117,8 +117,8 @@ const COPY = {
     featT: "Feature engineering",
     featP: "Five inputs were added. Carbon over manganese, the hardness range, the force range, the alloy total, and hardness times force.",
     tuneT: "Hyperparameter tuning",
-    tuneP: "XGBoost and LightGBM were trained again: 500 trees, depth 8, and a learning rate of 0.05.",
-    tuneN: "The first bar is training, the second is the test. XGBoost's test moves from 89.87% to 89.91%. LightGBM's test moves from 90.01% to 89.98%.",
+    tuneP: "XGBoost and LightGBM were trained again: 500 trees, depth 8, and a learning rate of 0.05. The stack was trained once: 300 trees for those two, 200 for Random Forest, and Ridge blended them. Linear, Ridge, and Random Forest kept the first fit.",
+    tuneN: "The first bar is training, the second is the test. XGBoost's test moves from 89.8683% to 89.91%. LightGBM's test moves from 90.0093% to 89.98%. The stack tests at 89.9969%.",
     advT: "Advanced optimization",
     advHow: "XGBoost, LightGBM, and Random Forest were stacked, and Ridge blended their predictions with 3-fold cross-validation.",
     advP: "Ductility first, then brittleness. The first bar is training, the second is the test.",
@@ -335,8 +335,8 @@ const COPY = {
     featT: "Feature Engineering",
     featP: "Fünf Eingaben kamen dazu. Kohlenstoff durch Mangan, die Härtespanne, die Kraftspanne, die Legierungssumme und Härte mal Kraft.",
     tuneT: "Hyperparameter-Tuning",
-    tuneP: "XGBoost und LightGBM wurden erneut trainiert: 500 Bäume, Tiefe 8 und eine Lernrate von 0,05.",
-    tuneN: "Der erste Balken ist das Training, der zweite der Test. Der Test von XGBoost geht von 89,87 % auf 89,91 %. LightGBM geht von 90,01 % auf 89,98 %.",
+    tuneP: "XGBoost und LightGBM wurden erneut trainiert: 500 Bäume, Tiefe 8 und eine Lernrate von 0,05. Der Stack wurde einmal trainiert: 300 Bäume für diese beiden, 200 für Random Forest, und Ridge mischte sie. Linear, Ridge und Random Forest behielten den ersten Lauf.",
+    tuneN: "Der erste Balken ist das Training, der zweite der Test. Der Test von XGBoost geht von 89,8683 % auf 89,91 %. LightGBM geht von 90,0093 % auf 89,98 %. Der Stack testet bei 89,9969 %.",
     advT: "Erweiterte Optimierung",
     advHow: "XGBoost, LightGBM und Random Forest wurden gestapelt, und Ridge mischte ihre Vorhersagen mit 3-facher Kreuzvalidierung.",
     advP: "Zuerst Duktilität, dann Sprödigkeit. Der erste Balken ist das Training, der zweite der Test.",
@@ -1330,10 +1330,14 @@ function chartMae() {
 }
 
 const TUNE = [
-  { name: "XGB", train: 0.9160, test: 0.8987 },
-  { name: "XGB tuned", train: 0.9143, test: 0.8991 },
-  { name: "LGB", train: 0.9006, test: 0.9001 },
-  { name: "LGB tuned", train: 0.9041, test: 0.8998 },
+  { name: "Linear", train: 0.8996, test: 0.900235 },
+  { name: "Ridge", train: 0.8996, test: 0.900235 },
+  { name: "RF", train: 0.9480, test: 0.898443 },
+  { name: "XGB", train: 0.9160, test: 0.898683 },
+  { name: "XGB tuned", train: 0.9143, test: 0.8991, testDigits: 2 },
+  { name: "LGB", train: 0.9006, test: 0.900093 },
+  { name: "LGB tuned", train: 0.9041, test: 0.8998, testDigits: 2 },
+  { name: "Stack", train: 0.9062, test: 0.899969 },
 ];
 
 const ADV_DUCT = [
@@ -1419,12 +1423,14 @@ function chartPairs(rows) {
   const names = rows.map((row, index) => {
     const label = row.key ? t(row.key) : row.name;
     const tuned = row.name.includes("tuned");
-    return `<text x="${x(index).toFixed(1)}" y="${H - 12}" text-anchor="middle" fill="${tuned ? "var(--ink)" : "var(--muted)"}" font-size="12" font-weight="${tuned ? 500 : 400}">${label}</text>`;
+    return `<text x="${x(index).toFixed(1)}" y="${H - 12}" text-anchor="middle" fill="${tuned ? "var(--ink)" : "var(--muted)"}" font-size="11" font-weight="${tuned ? 500 : 400}">${label}</text>`;
   }).join("");
   const bars = rows.map((row, index) => {
-    const label = `<text x="${x(index).toFixed(1)}" y="48" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(percent(row.train), 2)} / ${formatNumber(percent(row.test), 2)}</text>`;
-    return vizBar(x(index) - 9, y(percent(row.train)), y(0), 16, "var(--duct)") +
-      vizBar(x(index) + 9, y(percent(row.test)), y(0), 16, "var(--blue)") +
+    const digits = row.testDigits || 4;
+    const label = `<text x="${x(index).toFixed(1)}" y="44" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(percent(row.train), 2)}</text>
+      <text x="${x(index).toFixed(1)}" y="56" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(percent(row.test), digits)}</text>`;
+    return vizBar(x(index) - 8, y(percent(row.train)), y(0), 12, "var(--duct)") +
+      vizBar(x(index) + 8, y(percent(row.test)), y(0), 12, "var(--blue)") +
       label;
   }).join("");
   const y100 = y(100);
