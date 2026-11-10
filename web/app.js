@@ -114,6 +114,12 @@ const COPY = {
     s5k: "05 · Complexity",
     s5h: "Simple and complex",
     s5p: "The straight line scores the same test as the stack.",
+    tuneT: "Hyperparameter tuning",
+    tuneP: "XGBoost and LightGBM were trained again, with five extra inputs, 500 trees, depth 8, and a learning rate of 0.05.",
+    tuneN: "The first bar is training, the second is the test. XGBoost's test moves from 89.87% to 89.91%. LightGBM's test moves from 90.01% to 89.98%.",
+    advT: "Advanced optimization",
+    advP: "Those trees are stacked. Ridge combines them, checked in three folds. Brittleness gets the same stack.",
+    advN: "The stacked test stays at 90.00%. Linear and Ridge stay at 90.02%.",
     s6k: "06 · The miss",
     s6h: "The error in ductility points",
     s6p: "The typical miss for the chosen Ridge model is 1.59 ductility points.",
@@ -124,7 +130,7 @@ const COPY = {
     keptBrit: "Linear · 90.02%",
     keptMissLabel: "Typical miss",
     keptMiss: "± 1.59",
-    keptP: "Ridge is the ductility model. Linear is the brittleness model. The miss is 1.59 points.",
+    keptP: "Ridge is the ductility model. Tuning does not pass its 90.02% test. Linear is the brittleness model. The miss is 1.59 points.",
     step1t: "The table",
     step1p: "385,000 axle tests. 4Cr13 accounts for 359,178 rows and X46CrS13 for 25,822. Each row has a mean HV10, a bending force, a ductility, and the temper written as Series Tempering and Additional Tempering.",
     step2t: "The temper, as written",
@@ -320,6 +326,12 @@ const COPY = {
     s5k: "05 · Komplexität",
     s5h: "Einfach und komplex",
     s5p: "Die Gerade trifft denselben Testwert wie der Stack.",
+    tuneT: "Hyperparameter-Tuning",
+    tuneP: "XGBoost und LightGBM wurden erneut trainiert, mit fünf zusätzlichen Eingaben, 500 Bäumen, Tiefe 8 und einer Lernrate von 0,05.",
+    tuneN: "Der erste Balken ist das Training, der zweite der Test. Der Test von XGBoost geht von 89,87 % auf 89,91 %. LightGBM geht von 90,01 % auf 89,98 %.",
+    advT: "Erweiterte Optimierung",
+    advP: "Dieselben Bäume werden gestapelt. Ridge führt sie zusammen, geprüft in drei Falten. Sprödigkeit erhält denselben Stapel.",
+    advN: "Der gestapelte Test bleibt bei 90,00 %. Linear und Ridge bleiben bei 90,02 %.",
     s6k: "06 · Der Fehlbetrag",
     s6h: "Der Fehler in Duktilitätspunkten",
     s6p: "Der typische Fehler des gewählten Ridge-Modells beträgt 1,59 Duktilitätspunkte.",
@@ -330,7 +342,7 @@ const COPY = {
     keptBrit: "Linear · 90,02 %",
     keptMissLabel: "Typischer Fehler",
     keptMiss: "± 1,59",
-    keptP: "Ridge ist das Duktilitätsmodell. Linear ist das Sprödigkeitsmodell. Der Fehler beträgt 1,59 Punkte.",
+    keptP: "Ridge ist das Duktilitätsmodell. Das Tuning übertrifft seinen Test von 90,02 % nicht. Linear ist das Sprödigkeitsmodell. Der Fehler beträgt 1,59 Punkte.",
     step1t: "Die Tabelle",
     step1p: "385.000 Achsenprüfungen. 4Cr13 stellt 359.178 Zeilen, X46CrS13 25.822. Jede Zeile trägt eine mittlere HV10, eine Biegekraft, eine Duktilität und das Anlassen, geschrieben als Series Tempering und Additional Tempering.",
     step2t: "Das Anlassen, wie es geschrieben wurde",
@@ -1280,6 +1292,59 @@ function chartMae() {
   return vizSvg(vizAxis(frame, [0, 0.5, 1, 1.5, 2], 1) + bars, frame.W, frame.H);
 }
 
+const TUNE = [
+  { name: "XGB", train: 0.9160, test: 0.8987 },
+  { name: "XGB tuned", train: 0.9143, test: 0.8991 },
+  { name: "LGB", train: 0.9006, test: 0.9001 },
+  { name: "LGB tuned", train: 0.9041, test: 0.8998 },
+];
+
+const ADV = [
+  { name: "Ductility", key: "legDuct", train: 0.9062, test: 0.899969 },
+  { name: "Brittleness", key: "legBrit", train: 0.9061, test: 0.899968 },
+];
+
+function chartPairs(rows) {
+  const ymin = 0;
+  const ymax = 118;
+  const W = 720;
+  const H = 300;
+  const L = 52;
+  const R = 16;
+  const T = 36;
+  const B = 36;
+  const plotW = W - L - R;
+  const plotH = H - T - B;
+  const y = (value) => T + ((ymax - value) / (ymax - ymin)) * plotH;
+  const slot = plotW / rows.length;
+  const x = (index) => L + slot * index + slot / 2;
+  const percent = (value) => value * 100;
+  const ticks = [0, 25, 50, 75, 100].map((tick) => {
+    const yy = y(tick);
+    return `<line x1="${L}" x2="${L + plotW}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}" stroke="var(--chart-grid)"/>
+      <text x="${L - 8}" y="${(yy + 4).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">${formatNumber(tick, 0)}</text>`;
+  }).join("");
+  const names = rows.map((row, index) => {
+    const label = row.key ? t(row.key) : row.name;
+    const tuned = row.name.includes("tuned");
+    return `<text x="${x(index).toFixed(1)}" y="${H - 12}" text-anchor="middle" fill="${tuned ? "var(--ink)" : "var(--muted)"}" font-size="12" font-weight="${tuned ? 500 : 400}">${label}</text>`;
+  }).join("");
+  const bars = rows.map((row, index) => {
+    const label = `<text x="${x(index).toFixed(1)}" y="48" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(percent(row.train), 2)} / ${formatNumber(percent(row.test), 2)}</text>`;
+    return vizBar(x(index) - 9, y(percent(row.train)), y(0), 16, "var(--duct)") +
+      vizBar(x(index) + 9, y(percent(row.test)), y(0), 16, "var(--blue)") +
+      label;
+  }).join("");
+  const y100 = y(100);
+  const mark = `<line x1="${L}" x2="${L + plotW}" y1="${y100.toFixed(1)}" y2="${y100.toFixed(1)}" stroke="var(--dash)" stroke-dasharray="4 4"/>`;
+  return vizSvg(
+    vizLegend([{ label: t("legTrain"), color: "var(--duct)" }, { label: t("legTest"), color: "var(--blue)" }]) +
+      ticks + names + bars + mark,
+    W,
+    H
+  );
+}
+
 function renderMethod() {
   const mount = (id, html) => {
     const host = document.getElementById(id);
@@ -1291,6 +1356,8 @@ function renderMethod() {
   mount("c-gap", chartGap());
   mount("c-cx", chartComplex());
   mount("c-mae", chartMae());
+  mount("c-tune", chartPairs(TUNE));
+  mount("c-adv", chartPairs(ADV));
 }
 
 function show(mode) {

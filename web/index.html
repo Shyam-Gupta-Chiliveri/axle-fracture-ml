@@ -227,13 +227,25 @@
           <p class="viz-note" data-i18n="s5p">The straight line scores the same test as the stack.</p>
         </li>
         <li>
+          <h2 data-i18n="tuneT">Hyperparameter tuning</h2>
+          <p data-i18n="tuneP">XGBoost and LightGBM were trained again, with five extra inputs, 500 trees, depth 8, and a learning rate of 0.05.</p>
+          <div id="c-tune" class="viz"></div>
+          <p class="viz-note" data-i18n="tuneN">The first bar is training, the second is the test. XGBoost's test moves from 89.87% to 89.91%. LightGBM's test moves from 90.01% to 89.98%.</p>
+        </li>
+        <li>
+          <h2 data-i18n="advT">Advanced optimization</h2>
+          <p data-i18n="advP">Those trees are stacked. Ridge combines them, checked in three folds. Brittleness gets the same stack.</p>
+          <div id="c-adv" class="viz"></div>
+          <p class="viz-note" data-i18n="advN">The stacked test stays at 90.00%. Linear and Ridge stay at 90.02%.</p>
+        </li>
+        <li>
           <h2 data-i18n="keptT">What was kept</h2>
           <div class="figures">
             <div class="figure"><span class="label" data-i18n="keptDuctLabel">Ductility</span><span class="value" data-i18n="keptDuct">Ridge · 90.02%</span></div>
             <div class="figure"><span class="label" data-i18n="keptBritLabel">Brittleness</span><span class="value" data-i18n="keptBrit">Linear · 90.02%</span></div>
             <div class="figure"><span class="label" data-i18n="keptMissLabel">Typical miss</span><span class="value" data-i18n="keptMiss">± 1.59</span></div>
           </div>
-          <p class="viz-note" data-i18n="keptP">Ridge is the ductility model. Linear is the brittleness model. The miss is 1.59 points.</p>
+          <p class="viz-note" data-i18n="keptP">Ridge is the ductility model. Tuning does not pass its 90.02% test. Linear is the brittleness model. The miss is 1.59 points.</p>
         </li>
       </ol>
     </section>
@@ -245,6 +257,6 @@
 
   <script src="vendor/xlsx.full.min.js"></script>
   <script src="model.js?v=16"></script>
-  <script src="app.js?v=28"></script>
+  <script src="app.js?v=29"></script>
 </body>
 </html>
