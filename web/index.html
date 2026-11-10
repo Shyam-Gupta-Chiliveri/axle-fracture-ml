@@ -244,11 +244,11 @@
         <li>
           <h2 data-i18n="keptT">What was kept</h2>
           <div class="figures">
-            <div class="figure"><span class="label" data-i18n="keptDuctLabel">Ductility</span><span class="value" data-i18n="keptDuct">Ridge · 90.02%</span></div>
-            <div class="figure"><span class="label" data-i18n="keptBritLabel">Brittleness</span><span class="value" data-i18n="keptBrit">Linear · 90.02%</span></div>
+            <div class="figure"><span class="label" data-i18n="keptLinLabel">Linear</span><span class="value" data-i18n="keptLin">90.0235%</span></div>
+            <div class="figure"><span class="label" data-i18n="keptRidgeLabel">Ridge</span><span class="value" data-i18n="keptRidge">90.0235%</span></div>
             <div class="figure"><span class="label" data-i18n="keptMissLabel">Typical miss</span><span class="value" data-i18n="keptMiss">± 1.59</span></div>
           </div>
-          <p class="viz-note" data-i18n="keptP">Ridge is the ductility model. Tuning does not pass its 90.02% test. Linear is the brittleness model. The miss is 1.59 points.</p>
+          <p class="viz-note" data-i18n="keptP">Both win. They train at 89.96% and test at 90.0235%, and the two scores stay level. The stack trains higher and tests lower, so it does not pass them. The miss is 1.59 points.</p>
         </li>
       </ol>
     </section>
@@ -260,6 +260,6 @@
 
   <script src="vendor/xlsx.full.min.js"></script>
   <script src="model.js?v=16"></script>
-  <script src="app.js?v=37"></script>
+  <script src="app.js?v=38"></script>
 </body>
 </html>
