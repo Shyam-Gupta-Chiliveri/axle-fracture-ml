@@ -113,7 +113,7 @@ const COPY = {
     s4p: "A bar above zero means the model remembered the training rows. Random Forest is that model.",
     s5k: "05 · Complexity",
     s5h: "Simple and complex",
-    s5p: "The straight line scores the same test as the stack.",
+    s5p: "Green is a test of 90% or more. Linear and Ridge are the simple ones, at complexity 1. The stack, at 9, does not pass them.",
     featT: "Feature engineering",
     featP: "Five inputs were added. Carbon over manganese, the hardness range, the force range, the alloy total, and hardness times force.",
     tuneT: "Hyperparameter tuning",
@@ -327,7 +327,7 @@ const COPY = {
     s4p: "Ein Balken über null heißt, das Modell hat sich die Trainingszeilen gemerkt. Das ist Random Forest.",
     s5k: "05 · Komplexität",
     s5h: "Einfach und komplex",
-    s5p: "Die Gerade trifft denselben Testwert wie der Stack.",
+    s5p: "Grün ist ein Test von 90 % oder mehr. Linear und Ridge sind die einfachen, bei Komplexität 1. Der Stack, bei 9, übertrifft sie nicht.",
     featT: "Feature Engineering",
     featP: "Fünf Eingaben kamen dazu. Kohlenstoff durch Mangan, die Härtespanne, die Kraftspanne, die Legierungssumme und Härte mal Kraft.",
     tuneT: "Hyperparameter-Tuning",
@@ -1270,17 +1270,42 @@ function chartGap() {
 }
 
 function chartComplex() {
-  const ymin = 0.888;
-  const ymax = 0.962;
-  const frame = vizFrame(ymin, ymax);
-  const dots = FIT.map((row, index) => {
-    const chosen = row.name === "Ridge";
-    return `<circle cx="${frame.x(index).toFixed(1)}" cy="${frame.y(row.test).toFixed(1)}" r="${chosen ? 7 : 5}" fill="${chosen ? "var(--blue)" : "var(--hv-ink)"}"/>`;
+  const W = 720;
+  const H = 300;
+  const L = 48;
+  const R = 20;
+  const T = 22;
+  const B = 36;
+  const xmin = 0;
+  const xmax = 10;
+  const ymin = 89;
+  const ymax = 96;
+  const plotW = W - L - R;
+  const plotH = H - T - B;
+  const x = (value) => L + ((value - xmin) / (xmax - xmin)) * plotW;
+  const y = (value) => T + ((ymax - value) / (ymax - ymin)) * plotH;
+  const points = [
+    { name: "Linear", c: 1, test: 0.900235, dx: -30 },
+    { name: "Ridge", c: 1, test: 0.900235, dx: 30 },
+    { name: "RF", c: 5, test: 0.898443, dx: 0 },
+    { name: "LGB", c: 6, test: 0.900093, dx: 0 },
+    { name: "XGB", c: 7, test: 0.898683, dx: 0 },
+    { name: "Stack", c: 9, test: 0.899969, dx: 0 },
+  ];
+  const grid = [89, 91, 93, 95].map((tick) => {
+    const yy = y(tick);
+    return `<line x1="${L}" x2="${L + plotW}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}" stroke="var(--chart-grid)"/>
+      <text x="${L - 8}" y="${(yy + 4).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">${formatNumber(tick, 0)}</text>`;
   }).join("");
-  const y95 = frame.y(0.95);
-  const mark = `<line x1="${frame.L}" x2="${frame.L + frame.plotW}" y1="${y95.toFixed(1)}" y2="${y95.toFixed(1)}" stroke="var(--dash)" stroke-dasharray="4 4"/>
-    <text x="${frame.L + frame.plotW}" y="${(y95 - 6).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">0.95</text>`;
-  return vizSvg(vizAxis(frame, [0.89, 0.91, 0.93, 0.95], 2) + mark + dots, frame.W, frame.H);
+  const xticks = [0, 2, 4, 6, 8, 10].map((tick) => `<text x="${x(tick).toFixed(1)}" y="${H - 12}" text-anchor="middle" fill="var(--muted)" font-size="11">${tick}</text>`).join("");
+  const dots = points.map((row) => {
+    const cx = x(row.c) + row.dx;
+    const cy = y(row.test * 100);
+    const color = row.test >= 0.9 ? "var(--duct)" : "var(--force)";
+    return `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="9" fill="${color}" fill-opacity="0.9" stroke="var(--ink)" stroke-width="1.25"/>
+      <text x="${cx.toFixed(1)}" y="${(cy - 18).toFixed(1)}" text-anchor="middle" fill="${row.name === "Ridge" ? "var(--ink)" : "var(--muted)"}" font-size="12" font-weight="${row.name === "Ridge" ? 500 : 400}">${row.name}</text>`;
+  }).join("");
+  return vizSvg(grid + xticks + dots, W, H);
 }
 
 function chartMae() {
