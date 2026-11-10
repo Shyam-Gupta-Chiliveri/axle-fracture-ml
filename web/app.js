@@ -97,7 +97,7 @@ const COPY = {
     proc4p: "Linear, Ridge, Random Forest, XGBoost, LightGBM, and a stack of the tree models.",
     s1k: "01 · The score",
     s1h: "The score",
-    s1p: "Both targets sit near 90%. None reaches 95%.",
+    s1p: "The first bar is training, the second is the test. Ridge holds 90% on both.",
     legDuct: "Ductility",
     legBrit: "Brittleness",
     legTrain: "Training",
@@ -303,7 +303,7 @@ const COPY = {
     proc4p: "Linear, Ridge, Random Forest, XGBoost, LightGBM und ein Stack der Baummodelle.",
     s1k: "01 · Die Zahl",
     s1h: "Die Zahl",
-    s1p: "Beide Ziele liegen bei etwa 90 %. Keines erreicht 95 %.",
+    s1p: "Der erste Balken ist das Training, der zweite der Test. Ridge hält auf beiden 90 %.",
     legDuct: "Duktilität",
     legBrit: "Sprödigkeit",
     legTrain: "Training",
@@ -1190,19 +1190,24 @@ function vizBar(cx, yValue, yBase, width, color) {
 }
 
 function chartScore() {
-  const ymin = 0.888;
-  const ymax = 0.962;
+  const ymin = 0;
+  const ymax = 118;
   const frame = vizFrame(ymin, ymax);
+  const percent = (value) => value * 100;
   const bars = FIT.map((row, index) => {
-    const pair = row.brit != null;
-    const duct = vizBar(frame.x(index) + (pair ? -8 : 0), frame.y(row.test), frame.y(ymin), 14, "var(--blue)");
-    const brit = pair ? vizBar(frame.x(index) + 8, frame.y(row.brit), frame.y(ymin), 14, "var(--force)") : "";
-    return duct + brit;
+    const label = `<text x="${frame.x(index).toFixed(1)}" y="48" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(percent(row.train), 1)} / ${formatNumber(percent(row.test), 1)}</text>`;
+    return vizBar(frame.x(index) - 9, frame.y(percent(row.train)), frame.y(0), 16, "var(--duct)") +
+      vizBar(frame.x(index) + 9, frame.y(percent(row.test)), frame.y(0), 16, "var(--blue)") +
+      label;
   }).join("");
-  const y95 = frame.y(0.95);
-  const mark = `<line x1="${frame.L}" x2="${frame.L + frame.plotW}" y1="${y95.toFixed(1)}" y2="${y95.toFixed(1)}" stroke="var(--dash)" stroke-dasharray="4 4"/>
-    <text x="${frame.L + frame.plotW}" y="${(y95 - 6).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">0.95</text>`;
-  return vizSvg(vizLegend([{ label: t("legDuct"), color: "var(--blue)" }, { label: t("legBrit"), color: "var(--force)" }]) + vizAxis(frame, [0.89, 0.91, 0.93, 0.95], 2) + bars + mark, frame.W, frame.H);
+  const y100 = frame.y(100);
+  const mark = `<line x1="${frame.L}" x2="${frame.L + frame.plotW}" y1="${y100.toFixed(1)}" y2="${y100.toFixed(1)}" stroke="var(--dash)" stroke-dasharray="4 4"/>`;
+  return vizSvg(
+    vizLegend([{ label: t("legTrain"), color: "var(--duct)" }, { label: t("legTest"), color: "var(--blue)" }]) +
+      vizAxis(frame, [0, 25, 50, 75, 100], 0) + bars + mark,
+    frame.W,
+    frame.H
+  );
 }
 
 function chartRmse() {
