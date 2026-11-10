@@ -1,5 +1,7 @@
 # Axle fracture ML
 
+Website for this machine-learning operation. Hardness goes in, and the page shows how the models were trained.
+
 [https://axle.138.2.179.154.sslip.io](https://axle.138.2.179.154.sslip.io)
 
 Property desk for the 385,000-row axle tests. Enter a hardness reading and the desk estimates ductility, brittleness, and bending force. Enter a target property and it returns a temper that was actually run, plus the hardness those axles had.
