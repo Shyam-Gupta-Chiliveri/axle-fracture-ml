@@ -217,9 +217,9 @@
         </li>
         <li>
           <h2 data-i18n="tuneT">Hyperparameter tuning</h2>
-          <p data-i18n="tuneP">XGBoost and LightGBM were trained again: 500 trees, depth 8, and a learning rate of 0.05. The stack was trained once: 300 trees for those two, 200 for Random Forest, and Ridge blended them. Linear, Ridge, and Random Forest kept the first fit.</p>
+          <p data-i18n="tuneP">Only XGBoost and LightGBM were tuned: 500 trees, depth 8, and a learning rate of 0.05.</p>
           <div id="c-tune" class="viz"></div>
-          <p class="viz-note" data-i18n="tuneN">The first bar is training, the second is the test. XGBoost's test moves from 89.8683% to 89.91%. LightGBM's test moves from 90.0093% to 89.98%. The stack tests at 89.9969%.</p>
+          <p class="viz-note" data-i18n="tuneN">The first bar is training, the second is the test. XGBoost's test moves from 89.8683% to 89.91%. LightGBM's test moves from 90.0093% to 89.98%.</p>
         </li>
         <li>
           <h2 data-i18n="advT">Advanced optimization</h2>
@@ -261,6 +261,6 @@
 
   <script src="vendor/xlsx.full.min.js"></script>
   <script src="model.js?v=16"></script>
-  <script src="app.js?v=41"></script>
+  <script src="app.js?v=42"></script>
 </body>
 </html>
