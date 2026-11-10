@@ -121,7 +121,7 @@ const COPY = {
     tuneN: "The first bar is training, the second is the test. XGBoost's test moves from 89.87% to 89.91%. LightGBM's test moves from 90.01% to 89.98%.",
     advT: "Advanced optimization",
     advP: "The stack is set beside Linear and Ridge. The first bar is ductility, the second is brittleness.",
-    advN: "Linear and Ridge hold 90.02% on both. The stack holds 90.00% on both. Brittleness is 100 minus ductility, so the two bars match.",
+    advN: "Linear and Ridge test at 90.0235% on both. The stack tests at 89.9969% ductility and 89.9968% brittleness.",
     s6k: "06 · The miss",
     s6h: "The error in ductility points",
     s6p: "The typical miss for the chosen Ridge model is 1.59 ductility points.",
@@ -335,7 +335,7 @@ const COPY = {
     tuneN: "Der erste Balken ist das Training, der zweite der Test. Der Test von XGBoost geht von 89,87 % auf 89,91 %. LightGBM geht von 90,01 % auf 89,98 %.",
     advT: "Erweiterte Optimierung",
     advP: "Der Stack steht neben Linear und Ridge. Der erste Balken ist Duktilität, der zweite Sprödigkeit.",
-    advN: "Linear und Ridge halten auf beiden 90,02 %. Der Stack hält auf beiden 90,00 %. Sprödigkeit ist 100 minus Duktilität, deshalb sind die beiden Balken gleich.",
+    advN: "Linear und Ridge testen auf beiden bei 90,0235 %. Der Stack testet bei 89,9969 % Duktilität und 89,9968 % Sprödigkeit.",
     s6k: "06 · Der Fehlbetrag",
     s6h: "Der Fehler in Duktilitätspunkten",
     s6p: "Der typische Fehler des gewählten Ridge-Modells beträgt 1,59 Duktilitätspunkte.",
@@ -1335,8 +1335,8 @@ const ADV = [
 ];
 
 function chartAdvance() {
-  const ymin = 89.96;
-  const ymax = 90.06;
+  const ymin = 89.985;
+  const ymax = 90.035;
   const W = 720;
   const H = 300;
   const L = 58;
@@ -1348,7 +1348,7 @@ function chartAdvance() {
   const y = (value) => T + ((ymax - value) / (ymax - ymin)) * plotH;
   const slot = plotW / ADV.length;
   const x = (index) => L + slot * index + slot / 2;
-  const ticks = [89.96, 89.98, 90, 90.02, 90.04, 90.06].map((tick) => {
+  const ticks = [89.99, 90, 90.01, 90.02, 90.03].map((tick) => {
     const yy = y(tick);
     return `<line x1="${L}" x2="${L + plotW}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}" stroke="var(--chart-grid)"/>
       <text x="${L - 8}" y="${(yy + 4).toFixed(1)}" text-anchor="end" fill="var(--muted)" font-size="11">${formatNumber(tick, 2)}</text>`;
@@ -1359,7 +1359,7 @@ function chartAdvance() {
   }).join("");
   const bars = ADV.map((row, index) => {
     const top = Math.min(y(row.duct * 100), y(row.brit * 100));
-    const label = `<text x="${x(index).toFixed(1)}" y="${(top - 10).toFixed(1)}" text-anchor="middle" fill="var(--ink)" font-size="11" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(row.duct * 100, 2)} / ${formatNumber(row.brit * 100, 2)}</text>`;
+    const label = `<text x="${x(index).toFixed(1)}" y="${(top - 10).toFixed(1)}" text-anchor="middle" fill="var(--ink)" font-size="11" font-family="IBM Plex Mono, ui-monospace, monospace">${formatNumber(row.duct * 100, 4)} / ${formatNumber(row.brit * 100, 4)}</text>`;
     return vizBar(x(index) - 12, y(row.duct * 100), y(ymin), 20, "var(--blue)") +
       vizBar(x(index) + 12, y(row.brit * 100), y(ymin), 20, "var(--force)") +
       label;
